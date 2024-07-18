@@ -35,4 +35,12 @@ export const nuevaEncuestaStyles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
+  label: {
+    fontSize: 18,
+    marginBottom: 10,
+  },
+  picker: {
+    width: '80%',
+    marginBottom: 20,
+  },
 });
