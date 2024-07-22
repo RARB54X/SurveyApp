@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
-import { inicioStyles } from '../styles/inicioStyles'; // Asegúrate de que la capitalización sea correcta
+import { inicioStyles } from '../styles/inicioStyles';
 
 const InicioScreen = ({ navigation }) => {
   return (

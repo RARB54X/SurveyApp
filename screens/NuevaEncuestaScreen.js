@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import { nuevaEncuestaStyles } from '../styles/nuevaEncuestaStyles';
 import { Picker } from '@react-native-picker/picker';
+import { localidades } from '../data/localidades'; // Ajusta la ruta según tu estructura de carpetas
 
 const NuevaEncuestaScreen = () => {
   const [nombre, setNombre] = useState('');
@@ -10,13 +11,21 @@ const NuevaEncuestaScreen = () => {
   const [pregunta1, setPregunta1] = useState('');
   const [fecha, setFecha] = useState(null);
   const [edad, setEdad] = useState('');
-  const [tipoDocumento, setTipoDocumento] = useState('CC'); // Estado para el tipo de documento
-  const [numeroDocumento, setNumeroDocumento] = useState(''); // Estado para el número de documento
+  const [tipoDocumento, setTipoDocumento] = useState('CC');
+  const [numeroDocumento, setNumeroDocumento] = useState('');
+  const [fechaNacimiento, setFechaNacimiento] = useState(null);
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const [isNacimientoPickerVisible, setNacimientoPickerVisibility] = useState(false);
+  const [localidad, setLocalidad] = useState('');
 
   const handleConfirm = (date) => {
     setFecha(date);
     setDatePickerVisibility(false);
+  };
+
+  const handleNacimientoConfirm = (date) => {
+    setFechaNacimiento(date);
+    setNacimientoPickerVisibility(false);
   };
 
   const handleSubmit = () => {
@@ -36,6 +45,10 @@ const NuevaEncuestaScreen = () => {
       Alert.alert('Error', 'El campo Fecha es obligatorio');
       return;
     }
+    if (!fechaNacimiento) {
+      Alert.alert('Error', 'El campo Fecha de Nacimiento es obligatorio');
+      return;
+    }
     if (!edad) {
       Alert.alert('Error', 'El campo Edad es obligatorio');
       return;
@@ -44,15 +57,21 @@ const NuevaEncuestaScreen = () => {
       Alert.alert('Error', 'El campo Número de Documento es obligatorio');
       return;
     }
+    if (!localidad) {
+      Alert.alert('Error', 'El campo Localidad es obligatorio');
+      return;
+    }
+
     // Lógica para manejar el envío de la encuesta
     console.log('Nombre:', nombre);
     console.log('Apellido:', apellido);
     console.log('Pregunta 1:', pregunta1);
     console.log('Fecha:', fecha.toLocaleDateString());
+    console.log('Fecha de Nacimiento:', fechaNacimiento.toLocaleDateString());
     console.log('Edad:', edad);
     console.log('Tipo de Documento:', tipoDocumento);
     console.log('Número de Documento:', numeroDocumento);
-    // Aquí puedes agregar la lógica para enviar las preguntas a un servidor o guardarlas localmente
+    console.log('Localidad:', localidad);
   };
 
   return (
@@ -78,7 +97,7 @@ const NuevaEncuestaScreen = () => {
       />
       <TouchableOpacity style={nuevaEncuestaStyles.button} onPress={() => setDatePickerVisibility(true)}>
         <Text style={nuevaEncuestaStyles.buttonText}>
-          {fecha ? `Fecha: ${fecha.toLocaleDateString()}` : 'Seleccionar Fecha'}
+          {fecha ? `Fecha: ${fecha.toLocaleDateString()}` : 'Seleccionar Fecha de encuesta'}
         </Text>
       </TouchableOpacity>
       <DateTimePicker
@@ -87,7 +106,18 @@ const NuevaEncuestaScreen = () => {
         onConfirm={handleConfirm}
         onCancel={() => setDatePickerVisibility(false)}
       />
-      <Text style={nuevaEncuestaStyles.label}>Selecciona tu Edad:</Text>
+      <TouchableOpacity style={nuevaEncuestaStyles.button} onPress={() => setNacimientoPickerVisibility(true)}>
+        <Text style={nuevaEncuestaStyles.buttonText}>
+          {fechaNacimiento ? `Fecha de Nacimiento: ${fechaNacimiento.toLocaleDateString()}` : 'Seleccionar Fecha de Nacimiento'}
+        </Text>
+      </TouchableOpacity>
+      <DateTimePicker
+        isVisible={isNacimientoPickerVisible}
+        mode="date"
+        onConfirm={handleNacimientoConfirm}
+        onCancel={() => setNacimientoPickerVisibility(false)}
+      />
+      <Text style={nuevaEncuestaStyles.label}>Selecciona la Edad:</Text>
       <Picker
         selectedValue={edad}
         style={nuevaEncuestaStyles.picker}
@@ -107,7 +137,6 @@ const NuevaEncuestaScreen = () => {
         <Picker.Item label="Tarjeta de Identidad (TI)" value="TI" />
         <Picker.Item label="Cédula de Extranjería (CE)" value="CE" />
         <Picker.Item label="Pasaporte" value="Pasaporte" />
-        {/* Agrega otros tipos de documentos según sea necesario */}
       </Picker>
       <TextInput
         style={nuevaEncuestaStyles.input}
@@ -116,6 +145,16 @@ const NuevaEncuestaScreen = () => {
         onChangeText={setNumeroDocumento}
         keyboardType="numeric"
       />
+      <Text style={nuevaEncuestaStyles.label}>Lugar de Nacimiento:</Text>
+      <Picker
+        selectedValue={localidad}
+        style={nuevaEncuestaStyles.picker}
+        onValueChange={(itemValue) => setLocalidad(itemValue)}
+      >
+        {localidades.map((loc) => (
+          <Picker.Item key={loc.id} label={loc.nombre} value={loc.id} />
+        ))}
+      </Picker>
       <TouchableOpacity style={nuevaEncuestaStyles.button} onPress={handleSubmit}>
         <Text style={nuevaEncuestaStyles.buttonText}>Enviar</Text>
       </TouchableOpacity>

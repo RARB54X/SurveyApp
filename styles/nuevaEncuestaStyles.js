@@ -43,5 +43,6 @@ export const nuevaEncuestaStyles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 5,
     marginBottom: 10,
+    width: '100%', // Asegura que el picker ocupe el ancho completo
   },
 });
