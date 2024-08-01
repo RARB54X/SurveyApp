@@ -2,9 +2,10 @@ import { StyleSheet } from 'react-native';
 
 export const nuevaEncuestaStyles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     paddingHorizontal: 20,
     paddingTop: 20,
+    paddingBottom: 30, // Añadido para asegurar que el botón sea visible
   },
   header: {
     fontSize: 24,
@@ -22,27 +23,36 @@ export const nuevaEncuestaStyles = StyleSheet.create({
   },
   button: {
     backgroundColor: '#007bff',
-    paddingVertical: 15,
-    paddingHorizontal: 20,
+    paddingVertical: 10,
     borderRadius: 5,
-    marginTop: 10,
-    alignItems: 'center',
+    marginBottom: 10,
   },
   buttonText: {
     color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  label: {
-    fontSize: 18,
-    marginTop: 15,
+    textAlign: 'center',
+    fontSize: 16,
   },
   picker: {
-    height: 40,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    borderRadius: 5,
+    height: 50,
+    width: '100%',
     marginBottom: 10,
-    width: '100%', // Asegura que el picker ocupe el ancho completo
+  },
+  label: {
+    fontSize: 16,
+    marginBottom: 5,
+  },
+  checkboxGroup: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 10,
+  },
+  checkboxContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 5,
+  },
+  checkboxLabel: {
+    fontSize: 16,
+    marginLeft: 8,  
   },
 });
