@@ -7,10 +7,12 @@ import { Checkbox } from 'react-native-paper'; // Importar Checkbox
 import localidades from '../data/localidades'; // Asegúrate de que la ruta es correcta
 import nivelesEstudio from '../data/nivelesEstudio'; // Asegúrate de que la ruta es correcta
 import estadoCivilOptions from '../data/estadoCivil'; // Ajusta la ruta si es necesario
+import { useNavigation } from '@react-navigation/native'; // Importar useNavigation
 
 const NuevaEncuestaScreen = () => {
+  const navigation = useNavigation(); // Inicializar useNavigation
   const [nombre, setNombre] = useState('');
-  const [apellido, setApellido] = useState('');  
+  const [apellido, setApellido] = useState('');
   const [fecha, setFecha] = useState(null);
   const [fechaNacimiento, setFechaNacimiento] = useState(null);
   const [lugarNacimiento, setLugarNacimiento] = useState(localidades.length > 0 ? localidades[0].nombre : '');
@@ -60,8 +62,9 @@ const NuevaEncuestaScreen = () => {
     setIncorporacionPickerVisibility(false);
   };
 
+
   const handleSubmit = () => {
-    if (!nombre.trim()) {
+    /*if (!nombre.trim()) {
       Alert.alert('Error', 'El campo Nombre es obligatorio');
       return;
     }
@@ -114,7 +117,8 @@ const NuevaEncuestaScreen = () => {
     console.log('Por qué se incorporó:', porqueIncorporacion);
     console.log('¿Su familia está de acuerdo?:', familiaDeAcuerdo);
     console.log('Enfermedades Padecidas:', enfermedadesPadecidas);
-    console.log('¿Ha pertenecido a las fuerzas militares?:', haPertenecidoFuerzasMilitares);
+    console.log('¿Ha pertenecido a las fuerzas militares?:', haPertenecidoFuerzasMilitares);*/
+    navigation.navigate('DatosFamiliares');
 
     // Aquí puedes agregar la lógica para enviar las preguntas a un servidor o guardarlas localmente
   };
@@ -133,38 +137,44 @@ const NuevaEncuestaScreen = () => {
 
   return (
     <ScrollView contentContainerStyle={nuevaEncuestaStyles.container}>
-      <Text style={nuevaEncuestaStyles.header}>Nueva Encuesta</Text>
+      <Text style={nuevaEncuestaStyles.header}>Hoja de Vida</Text>
 
       {/* Datos Básicos */}
-      <TextInput
-        style={nuevaEncuestaStyles.input}
-        placeholder="Nombre"
-        value={nombre}
-        onChangeText={setNombre}
-      />
-      <TextInput
-        style={nuevaEncuestaStyles.input}
-        placeholder="Apellido"
-        value={apellido}
-        onChangeText={setApellido}
-      />      
-      <TextInput
-        style={nuevaEncuestaStyles.input}
-        placeholder="Seudónimo o Nombre"
-        value={seudonimo}
-        onChangeText={setSeudonimo}
-      />
+      <Text style={nuevaEncuestaStyles.label}>Fecha Encuesta</Text>
       <TouchableOpacity style={nuevaEncuestaStyles.button} onPress={() => setDatePickerVisibility(true)}>
         <Text style={nuevaEncuestaStyles.buttonText}>
           {fecha ? `Fecha: ${fecha.toLocaleDateString()}` : 'Seleccionar Fecha de encuesta'}
         </Text>
       </TouchableOpacity>
+
       <DateTimePicker
         isVisible={isDatePickerVisible}
         mode="date"
         onConfirm={handleConfirm}
         onCancel={() => setDatePickerVisibility(false)}
       />
+      <Text style={nuevaEncuestaStyles.label}>Nombre:</Text>
+      <TextInput
+        style={nuevaEncuestaStyles.input}
+        placeholder="Nombre"
+        value={nombre}
+        onChangeText={setNombre}
+      />
+      <Text style={nuevaEncuestaStyles.label}>Apellido:</Text>
+      <TextInput
+        style={nuevaEncuestaStyles.input}
+        placeholder="Apellido"
+        value={apellido}
+        onChangeText={setApellido}
+      />
+      <Text style={nuevaEncuestaStyles.label}>Seudónimo o Nombre</Text>
+      <TextInput
+        style={nuevaEncuestaStyles.input}
+        placeholder="Seudónimo o Nombre"
+        value={seudonimo}
+        onChangeText={setSeudonimo}
+      />
+      <Text style={nuevaEncuestaStyles.label}>Fecha de Nacimiento:</Text>
       <TouchableOpacity style={nuevaEncuestaStyles.button} onPress={() => setNacimientoPickerVisibility(true)}>
         <Text style={nuevaEncuestaStyles.buttonText}>
           {fechaNacimiento ? `Fecha de Nacimiento: ${fechaNacimiento.toLocaleDateString()}` : 'Seleccionar Fecha de Nacimiento'}
@@ -176,6 +186,7 @@ const NuevaEncuestaScreen = () => {
         onConfirm={handleNacimientoConfirm}
         onCancel={() => setNacimientoPickerVisibility(false)}
       />
+      <Text style={nuevaEncuestaStyles.label}>Edad:</Text>
       <TextInput
         style={nuevaEncuestaStyles.input}
         placeholder="Edad"
@@ -184,6 +195,7 @@ const NuevaEncuestaScreen = () => {
         onChangeText={setEdad}
       />
       <Text style={nuevaEncuestaStyles.label}>Tipo de Documento:</Text>
+
       <Picker
         selectedValue={tipoDocumento}
         style={nuevaEncuestaStyles.picker}
@@ -193,6 +205,8 @@ const NuevaEncuestaScreen = () => {
         <Picker.Item label="Tarjeta de Identidad" value="TI" />
         <Picker.Item label="Pasaporte" value="PAS" />
       </Picker>
+
+      <Text style={nuevaEncuestaStyles.label}>Número de Documento:</Text>
       <TextInput
         style={nuevaEncuestaStyles.input}
         placeholder="Número de Documento"
@@ -200,6 +214,7 @@ const NuevaEncuestaScreen = () => {
         onChangeText={setNumeroDocumento}
       />
       <Text style={nuevaEncuestaStyles.label}>Lugar de Nacimiento:</Text>
+
       <Picker
         selectedValue={lugarNacimiento}
         style={nuevaEncuestaStyles.picker}
@@ -207,6 +222,8 @@ const NuevaEncuestaScreen = () => {
       >
         {localidadesItems}
       </Picker>
+
+      <Text style={nuevaEncuestaStyles.label}>Lugar de Vivienda:</Text>
       <TextInput
         style={nuevaEncuestaStyles.input}
         placeholder="Lugar de Vivienda"
@@ -214,6 +231,7 @@ const NuevaEncuestaScreen = () => {
         onChangeText={setLugarVivienda}
       />
       <Text style={nuevaEncuestaStyles.label}>Nivel de Estudio:</Text>
+
       <Picker
         selectedValue={nivelEstudio}
         style={nuevaEncuestaStyles.picker}
@@ -221,6 +239,7 @@ const NuevaEncuestaScreen = () => {
       >
         {nivelesEstudioItems}
       </Picker>
+
       <Text style={nuevaEncuestaStyles.label}>Profesión u Ocupación:</Text>
       <TextInput
         style={nuevaEncuestaStyles.input}
@@ -229,6 +248,7 @@ const NuevaEncuestaScreen = () => {
         onChangeText={setProfesion}
       />
       <Text style={nuevaEncuestaStyles.label}>Estado Civil:</Text>
+
       <Picker
         selectedValue={estadoCivil}
         style={nuevaEncuestaStyles.picker}
@@ -237,8 +257,10 @@ const NuevaEncuestaScreen = () => {
         {estadoCivilItems}
       </Picker>
 
+
       {/* Datos de Incorporación */}
       <Text style={nuevaEncuestaStyles.header}>Datos de Incorporación</Text>
+      <Text style={nuevaEncuestaStyles.label}>Fecha de Incorporación:</Text>
       <TouchableOpacity style={nuevaEncuestaStyles.button} onPress={() => setIncorporacionPickerVisibility(true)}>
         <Text style={nuevaEncuestaStyles.buttonText}>
           {fechaIncorporacion ? `Fecha de Incorporación: ${fechaIncorporacion.toLocaleDateString()}` : 'Seleccionar Fecha de Incorporación'}
@@ -250,24 +272,28 @@ const NuevaEncuestaScreen = () => {
         onConfirm={handleIncorporacionConfirm}
         onCancel={() => setIncorporacionPickerVisibility(false)}
       />
+      <Text style={nuevaEncuestaStyles.label}>Lugar de Incorporación:</Text>
       <TextInput
         style={nuevaEncuestaStyles.input}
         placeholder="Lugar de Incorporación"
         value={lugarIncorporacion}
         onChangeText={setLugarIncorporacion}
       />
+      <Text style={nuevaEncuestaStyles.label}>¿Quién lo incorporó?</Text>
       <TextInput
         style={nuevaEncuestaStyles.input}
-        placeholder="Quién lo Incorporó"
+        placeholder="¿Quién lo Incorporó?"
         value={quienIncorporo}
         onChangeText={setQuienIncorporo}
       />
+      <Text style={nuevaEncuestaStyles.label}>Mando que lo Recibió:</Text>
       <TextInput
         style={nuevaEncuestaStyles.input}
         placeholder="Mando que lo Recibió"
         value={mandoRecibido}
         onChangeText={setMandoRecibido}
       />
+      <Text style={nuevaEncuestaStyles.label}>Estructura en la cual se incorporó:</Text>
       <TextInput
         style={nuevaEncuestaStyles.input}
         placeholder="Estructura en la cual se Incorporó"
@@ -313,6 +339,7 @@ const NuevaEncuestaScreen = () => {
         value={porqueIncorporacion}
         onChangeText={setPorqueIncorporacion}
       />
+      <Text style={nuevaEncuestaStyles.label}>Enfermedades Padecidas:</Text>
       <TextInput
         style={nuevaEncuestaStyles.input}
         placeholder="Enfermedades Padecidas"
@@ -358,10 +385,9 @@ const NuevaEncuestaScreen = () => {
           onPress={() => setHaPertenecidoFuerzasMilitares(haPertenecidoFuerzasMilitares === 'No' ? '' : 'No')}
         />
         <Text style={nuevaEncuestaStyles.checkboxLabel}>No</Text>
-      </View>      
-
+      </View>
       <TouchableOpacity style={nuevaEncuestaStyles.button} onPress={handleSubmit}>
-        <Text style={nuevaEncuestaStyles.buttonText}>Enviar</Text>
+        <Text style={nuevaEncuestaStyles.buttonText}>Siguiente</Text>
       </TouchableOpacity>
     </ScrollView>
   );

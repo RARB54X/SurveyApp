@@ -5,7 +5,7 @@ export const inicioStyles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f5f5f5', // Fondo claro para elegancia
+    backgroundColor: '#f5f5f5',
     padding: 20,
   },
   logo: {
@@ -20,17 +20,19 @@ export const inicioStyles = StyleSheet.create({
     marginBottom: 40,
   },
   button: {
-    backgroundColor: '#007BFF', // Color del botón
+    backgroundColor: '#4CAF50',
     paddingVertical: 15,
-    paddingHorizontal: 30,
-    borderRadius: 25, // Bordes más redondeados para un diseño moderno
-    marginVertical: 10,
-    width: '80%',
+    paddingHorizontal: 25,
+    borderRadius: 8,
+    marginBottom: 20,
     alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%', // Ocupa todo el ancho disponible
   },
   buttonText: {
     color: '#fff',
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
+    textAlign: 'center', // Asegura que el texto esté centrado
   },
 });
