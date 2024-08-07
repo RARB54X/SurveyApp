@@ -16,12 +16,12 @@ const App = () => {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Inicio">
         <Stack.Screen name="Inicio" component={InicioScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="NuevaEncuesta" component={NuevaEncuestaScreen} />
-        <Stack.Screen name="RevisarEncuestas" component={RevisarEncuestasScreen} />
-        <Stack.Screen name="DatosFamiliares" component={DatosFamiliaresScreen}/>
-        <Stack.Screen name="DatosInternos" component={DatosInternosScreen}/>
-        <Stack.Screen name="OtrasPreguntas" component={OtrasPreguntasScreen}/>
-        <Stack.Screen name="PreguntasSeguridad" component={PreguntasSeguridadScreen}/>
+        <Stack.Screen name="NuevaEncuesta" component={NuevaEncuestaScreen} options={{ title: 'Hoja de Vida' }}/>
+        <Stack.Screen name="RevisarEncuestas" component={RevisarEncuestasScreen} options={{ title: 'Revisar Encuestas' }}/>
+        <Stack.Screen name="DatosFamiliares" component={DatosFamiliaresScreen} options={{ title: 'Datos Familiares' }}/>
+        <Stack.Screen name="DatosInternos" component={DatosInternosScreen} options={{ title: 'Datos internos' }}/>
+        <Stack.Screen name="OtrasPreguntas" component={OtrasPreguntasScreen} options={{ title: 'Otras Preguntas' }}/>
+        <Stack.Screen name="PreguntasSeguridad" component={PreguntasSeguridadScreen} options={{ title: 'Preguntas de Seguridad' }}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

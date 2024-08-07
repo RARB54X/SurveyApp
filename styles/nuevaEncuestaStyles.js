@@ -61,4 +61,13 @@ export const nuevaEncuestaStyles = StyleSheet.create({
     borderRadius: 5, // Redondear bordes (opcional)
     marginBottom: 5,    
   },
+  encuestadorContainer: {
+    marginTop: 20,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    backgroundColor: '#f9f9f9',
+    marginBottom: 20,
+  },
 });

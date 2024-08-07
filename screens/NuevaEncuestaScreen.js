@@ -140,6 +140,7 @@ const NuevaEncuestaScreen = () => {
       <Text style={nuevaEncuestaStyles.header}>Hoja de Vida</Text>
 
       {/* Datos Básicos */}
+      <View style={nuevaEncuestaStyles.encuestadorContainer}>
       <Text style={nuevaEncuestaStyles.label}>Fecha Encuesta</Text>
       <TouchableOpacity style={nuevaEncuestaStyles.button} onPress={() => setDatePickerVisibility(true)}>
         <Text style={nuevaEncuestaStyles.buttonText}>
@@ -153,24 +154,43 @@ const NuevaEncuestaScreen = () => {
         onConfirm={handleConfirm}
         onCancel={() => setDatePickerVisibility(false)}
       />
-      <Text style={nuevaEncuestaStyles.label}>Nombre:</Text>
+      <Text style={nuevaEncuestaStyles.label}>Nombre de quien realiza la encuesta</Text>
       <TextInput
         style={nuevaEncuestaStyles.input}
         placeholder="Nombre"
+        
+      />
+      <Text style={nuevaEncuestaStyles.label}>Identificación del encuestador</Text>
+      <TextInput
+        style={nuevaEncuestaStyles.input}
+        placeholder="Identificación"
+        
+      />
+      </View>
+
+      <Text style={nuevaEncuestaStyles.label}>Nombre del combatiente:</Text>
+      <TextInput
+        style={nuevaEncuestaStyles.input}
+        placeholder="Nombre del combatiente"
         value={nombre}
         onChangeText={setNombre}
       />
-      <Text style={nuevaEncuestaStyles.label}>Apellido:</Text>
+      <Text style={nuevaEncuestaStyles.label}>Apellido del combatiente:</Text>
       <TextInput
         style={nuevaEncuestaStyles.input}
-        placeholder="Apellido"
+        placeholder="Apellido del combatiente"
         value={apellido}
         onChangeText={setApellido}
       />
-      <Text style={nuevaEncuestaStyles.label}>Seudónimo o Nombre</Text>
+      <Text style={nuevaEncuestaStyles.label}>Mando que la elabora:</Text>
       <TextInput
         style={nuevaEncuestaStyles.input}
-        placeholder="Seudónimo o Nombre"
+        placeholder="Mando que la elabora:"
+      />
+      <Text style={nuevaEncuestaStyles.label}>Seudónimo o Nombres de Guerra</Text>
+      <TextInput
+        style={nuevaEncuestaStyles.input}
+        placeholder="Seudónimo o Nombres de Guerra"
         value={seudonimo}
         onChangeText={setSeudonimo}
       />
@@ -240,10 +260,10 @@ const NuevaEncuestaScreen = () => {
         {nivelesEstudioItems}
       </Picker>
 
-      <Text style={nuevaEncuestaStyles.label}>Profesión u Ocupación:</Text>
+      <Text style={nuevaEncuestaStyles.label}>Profesión u Ocupación antes de Incorporarse:</Text>
       <TextInput
         style={nuevaEncuestaStyles.input}
-        placeholder="Profesión u Ocupación"
+        placeholder="Profesión u Ocupación antes de Incorporarse"
         value={profesion}
         onChangeText={setProfesion}
       />
