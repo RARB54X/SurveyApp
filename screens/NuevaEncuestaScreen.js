@@ -8,10 +8,19 @@ import localidades from '../data/localidades'; // Asegúrate de que la ruta es c
 import nivelesEstudio from '../data/nivelesEstudio'; // Asegúrate de que la ruta es correcta
 import estadoCivilOptions from '../data/estadoCivil'; // Ajusta la ruta si es necesario
 import { useNavigation } from '@react-navigation/native'; // Importar useNavigation
+import { useSQLiteContext } from "expo-sqlite/next";
 
 const NuevaEncuestaScreen = () => {
+  const db = useSQLiteContext();
+  React.useEffect(() => {
+    db.withTransactionAsync(async () => {
+      await getData();
+    });
+  }, [db]);
   const navigation = useNavigation(); // Inicializar useNavigation
-  const [nombre, setNombre] = useState('');
+  const [nombreEncuestador, setNombreEncuestador] = useState('');
+  
+  const [nombre, setNombre] = useState('');  
   const [apellido, setApellido] = useState('');
   const [fecha, setFecha] = useState(null);
   const [fechaNacimiento, setFechaNacimiento] = useState(null);
@@ -63,64 +72,31 @@ const NuevaEncuestaScreen = () => {
   };
 
 
-  const handleSubmit = () => {
-    /*if (!nombre.trim()) {
-      Alert.alert('Error', 'El campo Nombre es obligatorio');
-      return;
-    }
-    if (!apellido.trim()) {
-      Alert.alert('Error', 'El campo Apellido es obligatorio');
-      return;
-    }    
-    if (!fecha) {
-      Alert.alert('Error', 'El campo Fecha es obligatorio');
-      return;
-    }
-    if (!fechaNacimiento) {
-      Alert.alert('Error', 'El campo Fecha de Nacimiento es obligatorio');
-      return;
-    }
-    if (!fechaIncorporacion) {
-      Alert.alert('Error', 'El campo Fecha de Incorporación es obligatorio');
-      return;
-    }
-    if (!edad) {
-      Alert.alert('Error', 'El campo Edad es obligatorio');
-      return;
-    }
-    if (!numeroDocumento.trim()) {
-      Alert.alert('Error', 'El campo Número de Documento es obligatorio');
-      return;
-    }
-    console.log('Nombre:', nombre);
-    console.log('Apellido:', apellido);  
-    console.log('Fecha:', fecha.toLocaleDateString());
-    console.log('Fecha de Nacimiento:', fechaNacimiento.toLocaleDateString());
-    console.log('Fecha de Incorporación:', fechaIncorporacion.toLocaleDateString());
-    console.log('Edad:', edad);
-    console.log('Tipo de Documento:', tipoDocumento);
-    console.log('Número de Documento:', numeroDocumento);
-    console.log('Lugar de Nacimiento:', lugarNacimiento);
-    console.log('Lugar de Vivienda:', lugarVivienda);
-    console.log('Nivel de Estudio:', nivelEstudio);
-    console.log('Profesión u Ocupación:', profesion);
-    console.log('Estado Civil:', estadoCivil);
-    console.log('Lugar de Incorporación:', lugarIncorporacion);
-    console.log('Quién lo Incorporó:', quienIncorporo);
-    console.log('Mando que lo Recibió:', mandoRecibido);
-    console.log('Estructura en la cual se Incorporó:', estructuraIncorporacion);
-    console.log('Seudónimo o Nombre:', seudonimo);
-    console.log('Otras Estructuras:', otrasEstructuras);
-    console.log('Mandos a Cargo:', mandosACargo);
-    console.log('Tiempo Permanecido:', tiempoPermanecido);
-    console.log('Tareas Desempeñadas:', tareasDesempenadas);
-    console.log('Por qué se incorporó:', porqueIncorporacion);
-    console.log('¿Su familia está de acuerdo?:', familiaDeAcuerdo);
-    console.log('Enfermedades Padecidas:', enfermedadesPadecidas);
-    console.log('¿Ha pertenecido a las fuerzas militares?:', haPertenecidoFuerzasMilitares);*/
-    navigation.navigate('DatosFamiliares');
+  async function getData() {
+    const result = await db.getAllAsync(
+      `SELECT * FROM interviewer`
+    );
+    console.log('interviewers', result);
+  }
 
-    // Aquí puedes agregar la lógica para enviar las preguntas a un servidor o guardarlas localmente
+  const handleSubmit = () => {
+
+    db.withTransactionAsync(async () => {
+
+      console.log('Insertando ...')
+      
+      await db.runAsync(
+        `INSERT INTO interviewer (name, id_card, date) VALUES (?, ?, ?);`,
+        [
+          'Cristo',
+          1234567809,
+          new Date()
+        ]
+      );
+      await getData();
+    });
+    
+    navigation.navigate('DatosFamiliares');
   };
 
   const localidadesItems = (localidades && Array.isArray(localidades) ? localidades : []).map(localidad => (
@@ -141,31 +117,31 @@ const NuevaEncuestaScreen = () => {
 
       {/* Datos Básicos */}
       <View style={nuevaEncuestaStyles.encuestadorContainer}>
-      <Text style={nuevaEncuestaStyles.label}>Fecha Encuesta</Text>
-      <TouchableOpacity style={nuevaEncuestaStyles.button} onPress={() => setDatePickerVisibility(true)}>
-        <Text style={nuevaEncuestaStyles.buttonText}>
-          {fecha ? `Fecha: ${fecha.toLocaleDateString()}` : 'Seleccionar Fecha de encuesta'}
-        </Text>
-      </TouchableOpacity>
+        <Text style={nuevaEncuestaStyles.label}>Fecha Encuesta</Text>
+        <TouchableOpacity style={nuevaEncuestaStyles.button} onPress={() => setDatePickerVisibility(true)}>
+          <Text style={nuevaEncuestaStyles.buttonText}>
+            {fecha ? `Fecha: ${fecha.toLocaleDateString()}` : 'Seleccionar Fecha de encuesta'}
+          </Text>
+        </TouchableOpacity>
 
-      <DateTimePicker
-        isVisible={isDatePickerVisible}
-        mode="date"
-        onConfirm={handleConfirm}
-        onCancel={() => setDatePickerVisibility(false)}
-      />
-      <Text style={nuevaEncuestaStyles.label}>Nombre de quien realiza la encuesta</Text>
-      <TextInput
-        style={nuevaEncuestaStyles.input}
-        placeholder="Nombre"
-        
-      />
-      <Text style={nuevaEncuestaStyles.label}>Identificación del encuestador</Text>
-      <TextInput
-        style={nuevaEncuestaStyles.input}
-        placeholder="Identificación"
-        
-      />
+        <DateTimePicker
+          isVisible={isDatePickerVisible}
+          mode="date"
+          onConfirm={handleConfirm}
+          onCancel={() => setDatePickerVisibility(false)}
+        />
+        <Text style={nuevaEncuestaStyles.label}>Nombre de quien realiza la encuesta</Text>
+        <TextInput
+          style={nuevaEncuestaStyles.input}
+          placeholder="Nombre"
+
+        />
+        <Text style={nuevaEncuestaStyles.label}>Identificación del encuestador</Text>
+        <TextInput
+          style={nuevaEncuestaStyles.input}
+          placeholder="Identificación"
+
+        />
       </View>
 
       <Text style={nuevaEncuestaStyles.label}>Nombre del combatiente:</Text>

@@ -1,8 +1,25 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
 import { inicioStyles } from '../styles/inicioStyles';
+import { useSQLiteContext } from "expo-sqlite/next";
+
 
 const InicioScreen = ({ navigation }) => {
+  const db = useSQLiteContext();
+
+  React.useEffect(() => {
+    db.withTransactionAsync(async () => {
+      await getData();
+    });
+  }, [db]);
+
+  async function getData() {
+    const result = await db.getAllAsync(
+      `SELECT * FROM Encuestador`
+    );
+    console.log(result);
+  }
+  
   return (
     <View style={inicioStyles.container}>
       <Image source={require('../assets/logo.png')} style={inicioStyles.logo} />
