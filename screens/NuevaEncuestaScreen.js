@@ -1,14 +1,22 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Alert, ScrollView } from 'react-native';
-import DateTimePicker from 'react-native-modal-datetime-picker';
-import { Picker } from '@react-native-picker/picker';
-import { nuevaEncuestaStyles } from '../styles/nuevaEncuestaStyles'; // Ajusta la ruta si es necesario
-import { Checkbox } from 'react-native-paper'; // Importar Checkbox
-import localidades from '../data/localidades'; // Asegúrate de que la ruta es correcta
-import nivelesEstudio from '../data/nivelesEstudio'; // Asegúrate de que la ruta es correcta
-import estadoCivilOptions from '../data/estadoCivil'; // Ajusta la ruta si es necesario
-import { useNavigation } from '@react-navigation/native'; // Importar useNavigation
+import { Picker } from "@react-native-picker/picker";
+import { useNavigation } from "@react-navigation/native"; // Importar useNavigation
 import { useSQLiteContext } from "expo-sqlite/next";
+import React, { useState } from "react";
+import {
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import DateTimePicker from "react-native-modal-datetime-picker";
+import { Checkbox } from "react-native-paper"; // Importar Checkbox
+import estadoCivilOptions from "../data/estadoCivil"; // Ajusta la ruta si es necesario
+import localidades from "../data/localidades"; // Asegúrate de que la ruta es correcta
+import nivelesEstudio from "../data/nivelesEstudio"; // Asegúrate de que la ruta es correcta
+import { InterviewerRepository } from "../repositories/InterviewerRepository";
+import { RespondentRepository } from "../repositories/RespondentRepository";
+import { nuevaEncuestaStyles } from "../styles/nuevaEncuestaStyles"; // Ajusta la ruta si es necesario
 
 const NuevaEncuestaScreen = () => {
   const db = useSQLiteContext();
@@ -17,99 +25,153 @@ const NuevaEncuestaScreen = () => {
       await getData();
     });
   }, [db]);
+
   const navigation = useNavigation(); // Inicializar useNavigation
-  const [nombreEncuestador, setNombreEncuestador] = useState('');
-  
-  const [nombre, setNombre] = useState('');  
-  const [apellido, setApellido] = useState('');
-  const [fecha, setFecha] = useState(null);
-  const [fechaNacimiento, setFechaNacimiento] = useState(null);
-  const [lugarNacimiento, setLugarNacimiento] = useState(localidades.length > 0 ? localidades[0].nombre : '');
-  const [lugarVivienda, setLugarVivienda] = useState('');
-  const [nivelEstudio, setNivelEstudio] = useState(nivelesEstudio.length > 0 ? nivelesEstudio[0].nombre : '');
-  const [profesion, setProfesion] = useState('');
-  const [estadoCivil, setEstadoCivil] = useState(estadoCivilOptions.length > 0 ? estadoCivilOptions[0].nombre : '');
-  const [edad, setEdad] = useState('');
-  const [tipoDocumento, setTipoDocumento] = useState('CC');
-  const [numeroDocumento, setNumeroDocumento] = useState('');
-
-  // Nuevos estados para la sección de incorporación
-  const [fechaIncorporacion, setFechaIncorporacion] = useState(null);
-  const [lugarIncorporacion, setLugarIncorporacion] = useState('');
-  const [quienIncorporo, setQuienIncorporo] = useState('');
-  const [mandoRecibido, setMandoRecibido] = useState('');
-  const [estructuraIncorporacion, setEstructuraIncorporacion] = useState('');
-
-  // Nuevos campos adicionales
-  const [seudonimo, setSeudonimo] = useState('');
-  const [otrasEstructuras, setOtrasEstructuras] = useState('');
-  const [mandosACargo, setMandosACargo] = useState('');
-  const [tiempoPermanecido, setTiempoPermanecido] = useState('');
-  const [tareasDesempenadas, setTareasDesempenadas] = useState('');
-  const [porqueIncorporacion, setPorqueIncorporacion] = useState('');
-  const [familiaDeAcuerdo, setFamiliaDeAcuerdo] = useState(''); // Estado para almacenar la respuesta
+  // datos encuestador
 
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-  const [isNacimientoPickerVisible, setNacimientoPickerVisibility] = useState(false);
-  const [isIncorporacionPickerVisible, setIncorporacionPickerVisibility] = useState(false);
-  const [enfermedadesPadecidas, setEnfermedadesPadecidas] = useState('');
-  const [haPertenecidoFuerzasMilitares, setHaPertenecidoFuerzasMilitares] = useState('');
+  const [nombreEncuestador, setNombreEncuestador] = useState("");
+  const [idCardEncuestador, setIdCardEncuestador] = useState("");
+  const [fecha, setFecha] = useState(null);
+  //datos encuestado
+  const [nombre, setNombre] = useState("");
+  const [apellido, setApellido] = useState("");
+  const [mandoElabora, setMandoElabora] = useState("");
+  const [seudonimo, setSeudonimo] = useState("");
+  const [fechaNacimiento, setFechaNacimiento] = useState(null);
+  const [isNacimientoPickerVisible, setNacimientoPickerVisibility] =
+    useState(false);
+  const [edad, setEdad] = useState("");
+  const [tipoDocumento, setTipoDocumento] = useState("CC");
+  const [numeroDocumento, setNumeroDocumento] = useState("");
+  const [lugarNacimiento, setLugarNacimiento] = useState(
+    localidades.length > 0 ? localidades[0].nombre : ""
+  );
+  const [lugarVivienda, setLugarVivienda] = useState("");
+  const [nivelEstudio, setNivelEstudio] = useState(
+    nivelesEstudio.length > 0 ? nivelesEstudio[0].nombre : ""
+  );
+  const [profesion, setProfesion] = useState("");
+  const [estadoCivil, setEstadoCivil] = useState(
+    estadoCivilOptions.length > 0 ? estadoCivilOptions[0].nombre : ""
+  );
+  // Nuevos estados para la sección de incorporación
+  const [fechaIncorporacion, setFechaIncorporacion] = useState(null);
+  const [isIncorporacionPickerVisible, setIncorporacionPickerVisibility] =
+    useState(false);
+  const [lugarIncorporacion, setLugarIncorporacion] = useState("");
+  const [quienIncorporo, setQuienIncorporo] = useState("");
+  const [mandoRecibido, setMandoRecibido] = useState("");
+  const [estructuraIncorporacion, setEstructuraIncorporacion] = useState("");
+  const [otrasEstructuras, setOtrasEstructuras] = useState("");
+  const [mandosACargo, setMandosACargo] = useState("");
+  const [tiempoPermanecido, setTiempoPermanecido] = useState("");
+  const [tareasDesempenadas, setTareasDesempenadas] = useState("");
+  const [porqueIncorporacion, setPorqueIncorporacion] = useState("");
+  const [enfermedadesPadecidas, setEnfermedadesPadecidas] = useState("");
+  const [familiaDeAcuerdo, setFamiliaDeAcuerdo] = useState("");
+  const [haPertenecidoFuerzasMilitares, setHaPertenecidoFuerzasMilitares] =
+    useState("");
 
-
+  const interviewerRepository = new InterviewerRepository(db);
+  const respondentRepository = new RespondentRepository(db);
+  //fecha encuesta
   const handleConfirm = (date) => {
     setFecha(date);
     setDatePickerVisibility(false);
   };
-
+  //fecha nacimiento
   const handleNacimientoConfirm = (date) => {
     setFechaNacimiento(date);
     setNacimientoPickerVisibility(false);
   };
-
+  //fecha incorporación
   const handleIncorporacionConfirm = (date) => {
     setFechaIncorporacion(date);
     setIncorporacionPickerVisibility(false);
   };
 
-
   async function getData() {
-    const result = await db.getAllAsync(
-      `SELECT * FROM interviewer`
-    );
-    console.log('interviewers', result);
+    const result = await interviewerRepository.findAll();
+    // console.log("interviewers", result);
   }
-
-  const handleSubmit = () => {
-
-    db.withTransactionAsync(async () => {
-
-      console.log('Insertando ...')
-      
-      await db.runAsync(
-        `INSERT INTO interviewer (name, id_card, date) VALUES (?, ?, ?);`,
-        [
-          'Cristo',
-          1234567809,
-          new Date()
-        ]
-      );
-      await getData();
+  //Boton
+  const handleSubmit = async () => {
+    const interviewerId = await interviewerRepository.create({
+      name: nombreEncuestador, // Valor del estado nombreEncuestador
+      idCard: idCardEncuestador, // Valor del estado idCardEncuestador
+      date: formatDate(fecha),
     });
-    
-    navigation.navigate('DatosFamiliares');
+
+    const respondentId = await respondentRepository.create({
+      firstName: nombre,
+      lastName: apellido,
+      supervisorElaborates: mandoElabora,
+      nickname: seudonimo,
+      birthDate: formatDate(fechaNacimiento),
+      age: edad,
+      documentType: tipoDocumento,
+      idNumber: numeroDocumento,
+      placeOfBirth: lugarNacimiento,
+      placeOfResidence: lugarVivienda,
+      education: nivelEstudio,
+      professionOccupation: profesion,
+      maritalStatus: estadoCivil,
+      incorporationDate: formatDate(fechaIncorporacion),
+      incorporationPlace: lugarIncorporacion,
+      whoIncorporated: quienIncorporo,
+      receivedSupervisor: mandoRecibido,
+      incorporationStructure: estructuraIncorporacion,
+      otherStructure: otrasEstructuras,
+      positionSupervisor: mandosACargo,
+      duration: tiempoPermanecido,
+      tasks: tareasDesempenadas,
+      reasonForIncorporation: porqueIncorporacion,
+      parentalIllness: enfermedadesPadecidas,
+      familyAgreement: familiaDeAcuerdo,
+      hasPreviousExperience: haPertenecidoFuerzasMilitares,
+      interviewer_id: interviewerId,
+    });
+
+    console.log("respondentId", respondentId);
+
+    navigation.navigate("DatosFamiliares", { respondentId });
   };
 
-  const localidadesItems = (localidades && Array.isArray(localidades) ? localidades : []).map(localidad => (
-    <Picker.Item key={localidad.id} label={localidad.nombre} value={localidad.nombre} />
+  const localidadesItems = (
+    localidades && Array.isArray(localidades) ? localidades : []
+  ).map((localidad) => (
+    <Picker.Item
+      key={localidad.id}
+      label={localidad.nombre}
+      value={localidad.nombre}
+    />
   ));
 
-  const nivelesEstudioItems = (nivelesEstudio && Array.isArray(nivelesEstudio) ? nivelesEstudio : []).map(nivel => (
+  const nivelesEstudioItems = (
+    nivelesEstudio && Array.isArray(nivelesEstudio) ? nivelesEstudio : []
+  ).map((nivel) => (
     <Picker.Item key={nivel.id} label={nivel.nombre} value={nivel.nombre} />
   ));
 
-  const estadoCivilItems = (estadoCivilOptions && Array.isArray(estadoCivilOptions) ? estadoCivilOptions : []).map(estado => (
+  const estadoCivilItems = (
+    estadoCivilOptions && Array.isArray(estadoCivilOptions)
+      ? estadoCivilOptions
+      : []
+  ).map((estado) => (
     <Picker.Item key={estado.id} label={estado.nombre} value={estado.nombre} />
   ));
+  //convertir la fecha
+  const formatDate = (date) => {
+    if (!date) return null;
+    // Crear una nueva instancia de Date a partir del valor
+    const d = new Date(date);
+    // Formatear la fecha en YYYY-MM-DD
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, "0"); // Meses empiezan desde 0
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
 
   return (
     <ScrollView contentContainerStyle={nuevaEncuestaStyles.container}>
@@ -118,9 +180,14 @@ const NuevaEncuestaScreen = () => {
       {/* Datos Básicos */}
       <View style={nuevaEncuestaStyles.encuestadorContainer}>
         <Text style={nuevaEncuestaStyles.label}>Fecha Encuesta</Text>
-        <TouchableOpacity style={nuevaEncuestaStyles.button} onPress={() => setDatePickerVisibility(true)}>
+        <TouchableOpacity
+          style={nuevaEncuestaStyles.button}
+          onPress={() => setDatePickerVisibility(true)}
+        >
           <Text style={nuevaEncuestaStyles.buttonText}>
-            {fecha ? `Fecha: ${fecha.toLocaleDateString()}` : 'Seleccionar Fecha de encuesta'}
+            {fecha
+              ? `Fecha: ${fecha.toLocaleDateString()}`
+              : "Seleccionar Fecha de encuesta"}
           </Text>
         </TouchableOpacity>
 
@@ -130,17 +197,23 @@ const NuevaEncuestaScreen = () => {
           onConfirm={handleConfirm}
           onCancel={() => setDatePickerVisibility(false)}
         />
-        <Text style={nuevaEncuestaStyles.label}>Nombre de quien realiza la encuesta</Text>
+        <Text style={nuevaEncuestaStyles.label}>
+          Nombre de quien realiza la encuesta
+        </Text>
         <TextInput
           style={nuevaEncuestaStyles.input}
           placeholder="Nombre"
-
+          value={nombreEncuestador}
+          onChangeText={setNombreEncuestador}
         />
-        <Text style={nuevaEncuestaStyles.label}>Identificación del encuestador</Text>
+        <Text style={nuevaEncuestaStyles.label}>
+          Identificación del encuestador
+        </Text>
         <TextInput
           style={nuevaEncuestaStyles.input}
           placeholder="Identificación"
-
+          value={idCardEncuestador}
+          onChangeText={setIdCardEncuestador}
         />
       </View>
 
@@ -162,8 +235,12 @@ const NuevaEncuestaScreen = () => {
       <TextInput
         style={nuevaEncuestaStyles.input}
         placeholder="Mando que la elabora:"
+        value={mandoElabora}
+        onChangeText={setMandoElabora}
       />
-      <Text style={nuevaEncuestaStyles.label}>Seudónimo o Nombres de Guerra</Text>
+      <Text style={nuevaEncuestaStyles.label}>
+        Seudónimo o Nombres de Guerra
+      </Text>
       <TextInput
         style={nuevaEncuestaStyles.input}
         placeholder="Seudónimo o Nombres de Guerra"
@@ -171,9 +248,14 @@ const NuevaEncuestaScreen = () => {
         onChangeText={setSeudonimo}
       />
       <Text style={nuevaEncuestaStyles.label}>Fecha de Nacimiento:</Text>
-      <TouchableOpacity style={nuevaEncuestaStyles.button} onPress={() => setNacimientoPickerVisibility(true)}>
+      <TouchableOpacity
+        style={nuevaEncuestaStyles.button}
+        onPress={() => setNacimientoPickerVisibility(true)}
+      >
         <Text style={nuevaEncuestaStyles.buttonText}>
-          {fechaNacimiento ? `Fecha de Nacimiento: ${fechaNacimiento.toLocaleDateString()}` : 'Seleccionar Fecha de Nacimiento'}
+          {fechaNacimiento
+            ? `Fecha de Nacimiento: ${fechaNacimiento.toLocaleDateString()}`
+            : "Seleccionar Fecha de Nacimiento"}
         </Text>
       </TouchableOpacity>
       <DateTimePicker
@@ -236,7 +318,9 @@ const NuevaEncuestaScreen = () => {
         {nivelesEstudioItems}
       </Picker>
 
-      <Text style={nuevaEncuestaStyles.label}>Profesión u Ocupación antes de Incorporarse:</Text>
+      <Text style={nuevaEncuestaStyles.label}>
+        Profesión u Ocupación antes de Incorporarse:
+      </Text>
       <TextInput
         style={nuevaEncuestaStyles.input}
         placeholder="Profesión u Ocupación antes de Incorporarse"
@@ -253,13 +337,17 @@ const NuevaEncuestaScreen = () => {
         {estadoCivilItems}
       </Picker>
 
-
       {/* Datos de Incorporación */}
       <Text style={nuevaEncuestaStyles.header}>Datos de Incorporación</Text>
       <Text style={nuevaEncuestaStyles.label}>Fecha de Incorporación:</Text>
-      <TouchableOpacity style={nuevaEncuestaStyles.button} onPress={() => setIncorporacionPickerVisibility(true)}>
+      <TouchableOpacity
+        style={nuevaEncuestaStyles.button}
+        onPress={() => setIncorporacionPickerVisibility(true)}
+      >
         <Text style={nuevaEncuestaStyles.buttonText}>
-          {fechaIncorporacion ? `Fecha de Incorporación: ${fechaIncorporacion.toLocaleDateString()}` : 'Seleccionar Fecha de Incorporación'}
+          {fechaIncorporacion
+            ? `Fecha de Incorporación: ${fechaIncorporacion.toLocaleDateString()}`
+            : "Seleccionar Fecha de Incorporación"}
         </Text>
       </TouchableOpacity>
       <DateTimePicker
@@ -289,7 +377,9 @@ const NuevaEncuestaScreen = () => {
         value={mandoRecibido}
         onChangeText={setMandoRecibido}
       />
-      <Text style={nuevaEncuestaStyles.label}>Estructura en la cual se incorporó:</Text>
+      <Text style={nuevaEncuestaStyles.label}>
+        Estructura en la cual se incorporó:
+      </Text>
       <TextInput
         style={nuevaEncuestaStyles.input}
         placeholder="Estructura en la cual se Incorporó"
@@ -298,14 +388,18 @@ const NuevaEncuestaScreen = () => {
       />
 
       {/* Campos adicionales */}
-      <Text style={nuevaEncuestaStyles.label}>En qué otras estructuras ha estado:</Text>
+      <Text style={nuevaEncuestaStyles.label}>
+        En qué otras estructuras ha estado:
+      </Text>
       <TextInput
         style={nuevaEncuestaStyles.input}
         placeholder="En qué otras estructuras ha estado"
         value={otrasEstructuras}
         onChangeText={setOtrasEstructuras}
       />
-      <Text style={nuevaEncuestaStyles.label}>Mandos que lo han tenido a cargo:</Text>
+      <Text style={nuevaEncuestaStyles.label}>
+        Mandos que lo han tenido a cargo:
+      </Text>
       <TextInput
         style={nuevaEncuestaStyles.input}
         placeholder="Mandos que lo han tenido a cargo"
@@ -344,45 +438,64 @@ const NuevaEncuestaScreen = () => {
       />
 
       {/* Nueva sección: ¿Su familia está de acuerdo? */}
-      <Text style={nuevaEncuestaStyles.label}>¿Su familia está de acuerdo?</Text>
+      <Text style={nuevaEncuestaStyles.label}>
+        ¿Su familia está de acuerdo?
+      </Text>
       <View style={nuevaEncuestaStyles.checkboxContainer}>
         <Checkbox
-          status={familiaDeAcuerdo === 'si' ? 'checked' : 'unchecked'}
-          onPress={() => setFamiliaDeAcuerdo('si')}
+          status={familiaDeAcuerdo === "si" ? "checked" : "unchecked"}
+          onPress={() => setFamiliaDeAcuerdo("si")}
         />
         <Text style={nuevaEncuestaStyles.checkboxLabel}>Sí</Text>
       </View>
       <View style={nuevaEncuestaStyles.checkboxContainer}>
         <Checkbox
-          status={familiaDeAcuerdo === 'no' ? 'checked' : 'unchecked'}
-          onPress={() => setFamiliaDeAcuerdo('no')}
+          status={familiaDeAcuerdo === "no" ? "checked" : "unchecked"}
+          onPress={() => setFamiliaDeAcuerdo("no")}
         />
         <Text style={nuevaEncuestaStyles.checkboxLabel}>No</Text>
       </View>
       <View style={nuevaEncuestaStyles.checkboxContainer}>
         <Checkbox
-          status={familiaDeAcuerdo === 'no_sabe' ? 'checked' : 'unchecked'}
-          onPress={() => setFamiliaDeAcuerdo('no_sabe')}
+          status={familiaDeAcuerdo === "no_sabe" ? "checked" : "unchecked"}
+          onPress={() => setFamiliaDeAcuerdo("no_sabe")}
         />
         <Text style={nuevaEncuestaStyles.checkboxLabel}>No sabe</Text>
       </View>
 
-      <Text style={nuevaEncuestaStyles.label}>¿Ha pertenecido a las fuerzas militares?</Text>
+      <Text style={nuevaEncuestaStyles.label}>
+        ¿Ha pertenecido a las fuerzas militares?
+      </Text>
       <View style={nuevaEncuestaStyles.checkboxContainer}>
         <Checkbox
-          status={haPertenecidoFuerzasMilitares === 'Sí' ? 'checked' : 'unchecked'}
-          onPress={() => setHaPertenecidoFuerzasMilitares(haPertenecidoFuerzasMilitares === 'Sí' ? '' : 'Sí')}
+          status={
+            haPertenecidoFuerzasMilitares === "Sí" ? "checked" : "unchecked"
+          }
+          onPress={() =>
+            setHaPertenecidoFuerzasMilitares(
+              haPertenecidoFuerzasMilitares === "Sí" ? "" : "Sí"
+            )
+          }
         />
         <Text style={nuevaEncuestaStyles.checkboxLabel}>Sí</Text>
       </View>
       <View style={nuevaEncuestaStyles.checkboxContainer}>
         <Checkbox
-          status={haPertenecidoFuerzasMilitares === 'No' ? 'checked' : 'unchecked'}
-          onPress={() => setHaPertenecidoFuerzasMilitares(haPertenecidoFuerzasMilitares === 'No' ? '' : 'No')}
+          status={
+            haPertenecidoFuerzasMilitares === "No" ? "checked" : "unchecked"
+          }
+          onPress={() =>
+            setHaPertenecidoFuerzasMilitares(
+              haPertenecidoFuerzasMilitares === "No" ? "" : "No"
+            )
+          }
         />
         <Text style={nuevaEncuestaStyles.checkboxLabel}>No</Text>
       </View>
-      <TouchableOpacity style={nuevaEncuestaStyles.button} onPress={handleSubmit}>
+      <TouchableOpacity
+        style={nuevaEncuestaStyles.button}
+        onPress={handleSubmit}
+      >
         <Text style={nuevaEncuestaStyles.buttonText}>Siguiente</Text>
       </TouchableOpacity>
     </ScrollView>

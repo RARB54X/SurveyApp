@@ -1,38 +1,88 @@
-import React from 'react';
-import { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ScrollView } from 'react-native';
-import { nuevaEncuestaStyles } from '../styles/otrasPreguntasStyle'; // Ajusta la ruta si es necesario
-import styles from '../styles/otrasPreguntasStyle';
+import React from "react";
+import { useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
+import styles from "../styles/otrasPreguntasStyle";
+import { OtherQuestionsRepository } from "../repositories/OtherQuestionsRepository";
+import { useSQLiteContext } from "expo-sqlite/next";
 
-const OtrasPreguntasScreen = ({ navigation }) => {
+const OtrasPreguntasScreen = ({ route, navigation }) => {
+  const { respondentId } = route.params;
+  console.log("respondentId", respondentId);
+  const db = useSQLiteContext();
 
-  const [primerosAños, setPrimerosAños] = useState('');
-  const [comoCastigaban, setComoCastigaban] = useState('');
-  const [comoPremiaban, setComoPremiaban] = useState('');
-  const [queriaSerGrande, setQueriaSerGrande] = useState('');
-  const [quiereSerAhora, setQuiereSerAhora] = useState('');
-  const [relacionPadre, setRelacionPadre] = useState('');
-  const [relacionMadre, setRelacionMadre] = useState('');
-  const [relacionHermanos, setRelacionHermanos] = useState('');
-  const [parejaEstable, setParejaEstable] = useState('');
-  const [tiempoPareja, setTiempoPareja] = useState('');
-  const [relacionPareja, setRelacionPareja] = useState('');
-  const [primeraRelacionSexual, setPrimeraRelacionSexual] = useState('');
-  const [esComoImaginaba, setEsComoImaginaba] = useState('');
-  const [demuestraAfecto, setDemuestraAfecto] = useState('');
-  const [enamorado, setEnamorado] = useState('');
-  const [teme, setTeme] = useState('');
-  const [sustoMasGrande, setSustoMasGrande] = useState('');
-  const [alegriaMasGrande, setAlegriaMasGrande] = useState('');
-  const [respuestaOfensa, setRespuestaOfensa] = useState('');
+  React.useEffect(() => {
+    db.withTransactionAsync(async () => {
+      await getData();
+    });
+  }, [db]);
+
+  const [primerosAños, setPrimerosAños] = useState("");
+  const [comoCastigaban, setComoCastigaban] = useState("");
+  const [comoPremiaban, setComoPremiaban] = useState("");
+  const [queriaSerGrande, setQueriaSerGrande] = useState("");
+  const [quiereSerAhora, setQuiereSerAhora] = useState("");
+  const [relacionPadre, setRelacionPadre] = useState("");
+  const [relacionMadre, setRelacionMadre] = useState("");
+  const [relacionHermanos, setRelacionHermanos] = useState("");
+  const [parejaEstable, setParejaEstable] = useState("");
+  const [tiempoPareja, setTiempoPareja] = useState("");
+  const [relacionPareja, setRelacionPareja] = useState("");
+  const [primeraRelacionSexual, setPrimeraRelacionSexual] = useState("");
+  const [esComoImaginaba, setEsComoImaginaba] = useState("");
+  const [demuestraAfecto, setDemuestraAfecto] = useState("");
+  const [enamorado, setEnamorado] = useState("");
+  const [teme, setTeme] = useState("");
+  const [sustoMasGrande, setSustoMasGrande] = useState("");
+  const [alegriaMasGrande, setAlegriaMasGrande] = useState("");
+  const [respuestaOfensa, setRespuestaOfensa] = useState("");
+
+  const otherQuestionsRepository = new OtherQuestionsRepository(db);
+
+  async function getData() {
+    const result = await otherQuestionsRepository.findAll();
+    console.log("Formación", result);
+  }
+
+  const handleSubmit = async () => {
+    await otherQuestionsRepository.create({
+      respondentId,
+      livedWithFirst7Years: primerosAños,
+      punishmentMethod: comoCastigaban,
+      rewardMethod: comoPremiaban,
+      childhoodAspiration: queriaSerGrande,
+      currentAspiration: quiereSerAhora,
+      relationshipWithFather: relacionPadre,
+      relationshipWithMother: relacionMadre,
+      relationshipWithSiblings: relacionHermanos,
+      hasStablePartner: parejaEstable,
+      timeWithPartner: tiempoPareja,
+      relationshipWithPartner: relacionPareja,
+      ageOfFirstSexualRelationship: primeraRelacionSexual,
+      currentSituation: esComoImaginaba,
+      affectionDemonstration: demuestraAfecto,
+      inLove: enamorado,
+      fears: teme,
+      biggestFear: sustoMasGrande,
+      greatestJoy: alegriaMasGrande,
+      responseToOffenseOrAttack: respuestaOfensa,
+    });
+
+    navigation.navigate("Inicio");
+  };
 
   return (
-
-
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.header}>Otras Preguntas</Text>
 
-      <Text style={styles.label}>¿Con quién vivió durante los primeros 7 años de vida?</Text>
+      <Text style={styles.label}>
+        ¿Con quién vivió durante los primeros 7 años de vida?
+      </Text>
       <TextInput
         style={styles.input}
         value={primerosAños}
@@ -109,7 +159,9 @@ const OtrasPreguntasScreen = ({ navigation }) => {
         onChangeText={setRelacionPareja}
       />
 
-      <Text style={styles.label}>¿A qué edad tuvo su primera relación sexual?</Text>
+      <Text style={styles.label}>
+        ¿A qué edad tuvo su primera relación sexual?
+      </Text>
       <TextInput
         style={styles.input}
         value={primeraRelacionSexual}
@@ -138,48 +190,44 @@ const OtrasPreguntasScreen = ({ navigation }) => {
       />
 
       <Text style={styles.label}>¿A qué le teme?</Text>
-      <TextInput
-        style={styles.input}
-        value={teme}
-        onChangeText={setTeme}
-      />
+      <TextInput style={styles.input} value={teme} onChangeText={setTeme} />
 
-      <Text style={styles.label}>¿Cuál ha sido el susto más grande que ha tenido?</Text>
+      <Text style={styles.label}>
+        ¿Cuál ha sido el susto más grande que ha tenido?
+      </Text>
       <TextInput
         style={styles.input}
         value={sustoMasGrande}
         onChangeText={setSustoMasGrande}
       />
 
-      <Text style={styles.label}>¿Cuál ha sido la alegría más grande que ha tenido?</Text>
+      <Text style={styles.label}>
+        ¿Cuál ha sido la alegría más grande que ha tenido?
+      </Text>
       <TextInput
         style={styles.input}
         value={alegriaMasGrande}
         onChangeText={setAlegriaMasGrande}
       />
 
-      <Text style={styles.label}>Si alguien (Civil o compañero) lo ofende o lo ataca, ¿qué le hace?</Text>
+      <Text style={styles.label}>
+        Si alguien (Civil o compañero) lo ofende o lo ataca, ¿qué le hace?
+      </Text>
       <TextInput
         style={styles.input}
         value={respuestaOfensa}
         onChangeText={setRespuestaOfensa}
       />
 
-
-
       <TouchableOpacity
         style={styles.button}
-        onPress={() => navigation.navigate('Inicio')}
+        onPress={handleSubmit}
+        // onPress={() => navigation.navigate('Inicio')}
       >
         <Text style={styles.buttonText}>Siguiente</Text>
       </TouchableOpacity>
     </ScrollView>
-
   );
 };
 
 export default OtrasPreguntasScreen;
-
-
-
-
