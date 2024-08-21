@@ -1,21 +1,21 @@
-import { Picker } from "@react-native-picker/picker";
-import { useNavigation } from "@react-navigation/native"; // Importar useNavigation
-import { useSQLiteContext } from "expo-sqlite/next";
-import React, { useState, useEffect } from "react";
+import { Picker } from '@react-native-picker/picker';
+import { useNavigation } from '@react-navigation/native'; // Importar useNavigation
+import { useSQLiteContext } from 'expo-sqlite/next';
+import React, { useState, useEffect } from 'react';
 import {
   ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
   View,
-} from "react-native";
-import DateTimePicker from "react-native-modal-datetime-picker";
-import { Checkbox } from "react-native-paper"; // Importar Checkbox
-import estadoCivilOptions from "../data/estadoCivil"; // Ajusta la ruta si es necesario
-import localidades from "../data/localidades"; // Asegúrate de que la ruta es correcta
-import nivelesEstudio from "../data/nivelesEstudio"; // Asegúrate de que la ruta es correcta
-import { RespondentRepository } from "../repositories/RespondentRepository";
-import { nuevaEncuestaStyles } from "../styles/nuevaEncuestaStyles"; // Ajusta la ruta si es necesario
+} from 'react-native';
+import DateTimePicker from 'react-native-modal-datetime-picker';
+import { Checkbox } from 'react-native-paper'; // Importar Checkbox
+import estadoCivilOptions from '../data/estadoCivil'; // Ajusta la ruta si es necesario
+import localidades from '../data/localidades'; // Asegúrate de que la ruta es correcta
+import nivelesEstudio from '../data/nivelesEstudio'; // Asegúrate de que la ruta es correcta
+import { RespondentRepository } from '../repositories/RespondentRepository';
+import { nuevaEncuestaStyles } from '../styles/nuevaEncuestaStyles'; // Ajusta la ruta si es necesario
 
 const NuevaEncuestaScreen = ({ route }) => {
   const { id } = route.params; //
@@ -27,48 +27,48 @@ const NuevaEncuestaScreen = ({ route }) => {
   // datos encuestador
 
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-  const [nombreEncuestador, setNombreEncuestador] = useState("");
-  const [idCardEncuestador, setIdCardEncuestador] = useState("");
+  const [nombreEncuestador, setNombreEncuestador] = useState('');
+  const [idCardEncuestador, setIdCardEncuestador] = useState('');
   const [fecha, setFecha] = useState(null);
   //datos encuestado
-  const [nombre, setNombre] = useState("");
-  const [apellido, setApellido] = useState("");
-  const [mandoElabora, setMandoElabora] = useState("");
-  const [seudonimo, setSeudonimo] = useState("");
+  const [nombre, setNombre] = useState('');
+  const [apellido, setApellido] = useState('');
+  const [mandoElabora, setMandoElabora] = useState('');
+  const [seudonimo, setSeudonimo] = useState('');
   const [fechaNacimiento, setFechaNacimiento] = useState(null);
   const [isNacimientoPickerVisible, setNacimientoPickerVisibility] =
     useState(false);
-  const [edad, setEdad] = useState("");
-  const [tipoDocumento, setTipoDocumento] = useState("CC");
-  const [numeroDocumento, setNumeroDocumento] = useState("");
+  const [edad, setEdad] = useState('');
+  const [tipoDocumento, setTipoDocumento] = useState('CC');
+  const [numeroDocumento, setNumeroDocumento] = useState('');
   const [lugarNacimiento, setLugarNacimiento] = useState(
-    localidades.length > 0 ? localidades[0].nombre : ""
+    localidades.length > 0 ? localidades[0].nombre : ''
   );
-  const [lugarVivienda, setLugarVivienda] = useState("");
+  const [lugarVivienda, setLugarVivienda] = useState('');
   const [nivelEstudio, setNivelEstudio] = useState(
-    nivelesEstudio.length > 0 ? nivelesEstudio[0].nombre : ""
+    nivelesEstudio.length > 0 ? nivelesEstudio[0].nombre : ''
   );
-  const [profesion, setProfesion] = useState("");
+  const [profesion, setProfesion] = useState('');
   const [estadoCivil, setEstadoCivil] = useState(
-    estadoCivilOptions.length > 0 ? estadoCivilOptions[0].nombre : ""
+    estadoCivilOptions.length > 0 ? estadoCivilOptions[0].nombre : ''
   );
   // Nuevos estados para la sección de incorporación
   const [fechaIncorporacion, setFechaIncorporacion] = useState(null);
   const [isIncorporacionPickerVisible, setIncorporacionPickerVisibility] =
     useState(false);
-  const [lugarIncorporacion, setLugarIncorporacion] = useState("");
-  const [quienIncorporo, setQuienIncorporo] = useState("");
-  const [mandoRecibido, setMandoRecibido] = useState("");
-  const [estructuraIncorporacion, setEstructuraIncorporacion] = useState("");
-  const [otrasEstructuras, setOtrasEstructuras] = useState("");
-  const [mandosACargo, setMandosACargo] = useState("");
-  const [tiempoPermanecido, setTiempoPermanecido] = useState("");
-  const [tareasDesempenadas, setTareasDesempenadas] = useState("");
-  const [porqueIncorporacion, setPorqueIncorporacion] = useState("");
-  const [enfermedadesPadecidas, setEnfermedadesPadecidas] = useState("");
-  const [familiaDeAcuerdo, setFamiliaDeAcuerdo] = useState("");
+  const [lugarIncorporacion, setLugarIncorporacion] = useState('');
+  const [quienIncorporo, setQuienIncorporo] = useState('');
+  const [mandoRecibido, setMandoRecibido] = useState('');
+  const [estructuraIncorporacion, setEstructuraIncorporacion] = useState('');
+  const [otrasEstructuras, setOtrasEstructuras] = useState('');
+  const [mandosACargo, setMandosACargo] = useState('');
+  const [tiempoPermanecido, setTiempoPermanecido] = useState('');
+  const [tareasDesempenadas, setTareasDesempenadas] = useState('');
+  const [porqueIncorporacion, setPorqueIncorporacion] = useState('');
+  const [enfermedadesPadecidas, setEnfermedadesPadecidas] = useState('');
+  const [familiaDeAcuerdo, setFamiliaDeAcuerdo] = useState('');
   const [haPertenecidoFuerzasMilitares, setHaPertenecidoFuerzasMilitares] =
-    useState("");
+    useState('');
 
   // const interviewerRepository = new InterviewerRepository(db);
   const respondentRepository = new RespondentRepository(db);
@@ -118,8 +118,8 @@ const NuevaEncuestaScreen = ({ route }) => {
     const d = new Date(date);
     // Formatear la fecha en YYYY-MM-DD
     const year = d.getFullYear();
-    const month = String(d.getMonth() + 1).padStart(2, "0"); // Meses empiezan desde 0
-    const day = String(d.getDate()).padStart(2, "0");
+    const month = String(d.getMonth() + 1).padStart(2, '0'); // Meses empiezan desde 0
+    const day = String(d.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
   };
   //Boton
@@ -160,19 +160,32 @@ const NuevaEncuestaScreen = ({ route }) => {
 
       // Verificar si se creó el encuestado correctamente
       if (!respondentId) {
-        console.error("No se pudo crear el encuestado.");
+        console.error('No se pudo crear el encuestado.');
         return;
       }
 
       // Redirigir a la siguiente pantalla con el ID del encuestado
-      navigation.navigate("DatosFamiliares", { respondentId });
+      navigation.navigate('DatosFamiliares', { respondentId });
     } catch (error) {
       console.error(
-        "Error al crear el encuestado o el entrevistador:",
+        'Error al crear el encuestado o el entrevistador:',
         error.message
       );
     }
   };
+
+  const loadRespondent = async (id) => {
+    const respondent = await respondentRepository.findById(id);
+
+    if (!respondent) {
+      return;
+    }
+    setNombreEncuestador(respondent.name_interviewer);
+  };
+
+  useEffect(() => {
+    loadRespondent(id);
+  }, [id]);
 
   return (
     <ScrollView contentContainerStyle={nuevaEncuestaStyles.container}>
@@ -188,7 +201,7 @@ const NuevaEncuestaScreen = ({ route }) => {
           <Text style={nuevaEncuestaStyles.buttonText}>
             {fecha
               ? `Fecha: ${fecha.toLocaleDateString()}`
-              : "Seleccionar Fecha de encuesta"}
+              : 'Seleccionar Fecha de encuesta'}
           </Text>
         </TouchableOpacity>
 
@@ -256,7 +269,7 @@ const NuevaEncuestaScreen = ({ route }) => {
         <Text style={nuevaEncuestaStyles.buttonText}>
           {fechaNacimiento
             ? `Fecha de Nacimiento: ${fechaNacimiento.toLocaleDateString()}`
-            : "Seleccionar Fecha de Nacimiento"}
+            : 'Seleccionar Fecha de Nacimiento'}
         </Text>
       </TouchableOpacity>
       <DateTimePicker
@@ -348,7 +361,7 @@ const NuevaEncuestaScreen = ({ route }) => {
         <Text style={nuevaEncuestaStyles.buttonText}>
           {fechaIncorporacion
             ? `Fecha de Incorporación: ${fechaIncorporacion.toLocaleDateString()}`
-            : "Seleccionar Fecha de Incorporación"}
+            : 'Seleccionar Fecha de Incorporación'}
         </Text>
       </TouchableOpacity>
       <DateTimePicker
@@ -444,22 +457,22 @@ const NuevaEncuestaScreen = ({ route }) => {
       </Text>
       <View style={nuevaEncuestaStyles.checkboxContainer}>
         <Checkbox
-          status={familiaDeAcuerdo === "si" ? "checked" : "unchecked"}
-          onPress={() => setFamiliaDeAcuerdo("si")}
+          status={familiaDeAcuerdo === 'si' ? 'checked' : 'unchecked'}
+          onPress={() => setFamiliaDeAcuerdo('si')}
         />
         <Text style={nuevaEncuestaStyles.checkboxLabel}>Sí</Text>
       </View>
       <View style={nuevaEncuestaStyles.checkboxContainer}>
         <Checkbox
-          status={familiaDeAcuerdo === "no" ? "checked" : "unchecked"}
-          onPress={() => setFamiliaDeAcuerdo("no")}
+          status={familiaDeAcuerdo === 'no' ? 'checked' : 'unchecked'}
+          onPress={() => setFamiliaDeAcuerdo('no')}
         />
         <Text style={nuevaEncuestaStyles.checkboxLabel}>No</Text>
       </View>
       <View style={nuevaEncuestaStyles.checkboxContainer}>
         <Checkbox
-          status={familiaDeAcuerdo === "no_sabe" ? "checked" : "unchecked"}
-          onPress={() => setFamiliaDeAcuerdo("no_sabe")}
+          status={familiaDeAcuerdo === 'no_sabe' ? 'checked' : 'unchecked'}
+          onPress={() => setFamiliaDeAcuerdo('no_sabe')}
         />
         <Text style={nuevaEncuestaStyles.checkboxLabel}>No sabe</Text>
       </View>
@@ -470,11 +483,11 @@ const NuevaEncuestaScreen = ({ route }) => {
       <View style={nuevaEncuestaStyles.checkboxContainer}>
         <Checkbox
           status={
-            haPertenecidoFuerzasMilitares === "Sí" ? "checked" : "unchecked"
+            haPertenecidoFuerzasMilitares === 'Sí' ? 'checked' : 'unchecked'
           }
           onPress={() =>
             setHaPertenecidoFuerzasMilitares(
-              haPertenecidoFuerzasMilitares === "Sí" ? "" : "Sí"
+              haPertenecidoFuerzasMilitares === 'Sí' ? '' : 'Sí'
             )
           }
         />
@@ -483,11 +496,11 @@ const NuevaEncuestaScreen = ({ route }) => {
       <View style={nuevaEncuestaStyles.checkboxContainer}>
         <Checkbox
           status={
-            haPertenecidoFuerzasMilitares === "No" ? "checked" : "unchecked"
+            haPertenecidoFuerzasMilitares === 'No' ? 'checked' : 'unchecked'
           }
           onPress={() =>
             setHaPertenecidoFuerzasMilitares(
-              haPertenecidoFuerzasMilitares === "No" ? "" : "No"
+              haPertenecidoFuerzasMilitares === 'No' ? '' : 'No'
             )
           }
         />

@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, FlatList } from "react-native";
-import revisarEncuestaStyles from "../styles/revisarEncuestaStyle";
-import { RevisarEncuestasRepository } from "../repositories/RevisarEncuestasRepository";
-import { useSQLiteContext } from "expo-sqlite/next";
+import React, { useEffect, useState } from 'react';
+import { View, Text, TouchableOpacity, FlatList } from 'react-native';
+import revisarEncuestaStyles from '../styles/revisarEncuestaStyle';
+import { RevisarEncuestasRepository } from '../repositories/RevisarEncuestasRepository';
+import { useSQLiteContext } from 'expo-sqlite/next';
 
 const RevisarEncuestasScreen = ({ navigation }) => {
   const db = useSQLiteContext();
@@ -15,7 +15,7 @@ const RevisarEncuestasScreen = ({ navigation }) => {
         const result = await repository.findAll();
         setData(result);
       } catch (error) {
-        console.error("Error al obtener los datos:", error.message);
+        console.error('Error al obtener los datos:', error.message);
       }
     };
 
@@ -24,18 +24,18 @@ const RevisarEncuestasScreen = ({ navigation }) => {
 
   const handleModify = (id) => {
     const respondentIDMod = id;
-    navigation.navigate("NuevaEncuesta", { respondentIDMod });
+    navigation.navigate('NuevaEncuesta', { id: respondentIDMod });
     // Lógica para modificar el encuestado con el ID correspondiente
-    console.log("Modificar encuestado con ID:", respondentIDMod);
+    console.log('Modificar encuestado con ID:', respondentIDMod);
   };
 
   const handleDelete = (id) => {
     // Lógica para borrar el encuestado con el ID correspondiente
-    console.log("Borrar encuestado con ID:", id);
+    console.log('Borrar encuestado con ID:', id);
   };
 
   const handleSubmit = () => {
-    navigation.navigate("Inicio");
+    navigation.navigate('Inicio');
   };
 
   const renderItem = ({ item }) => (

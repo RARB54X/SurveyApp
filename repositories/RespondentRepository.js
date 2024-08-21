@@ -1,6 +1,7 @@
+import { useSQLiteContext } from 'expo-sqlite/next';
 export class RespondentRepository {
   db;
-  constructor(db) {
+  constructor(db = useSQLiteContext()) {
     this.db = db;
   }
 
@@ -9,7 +10,7 @@ export class RespondentRepository {
       const lastInsertRowId = await new Promise((resolve, reject) => {
         this.db.withTransactionAsync(async () => {
           try {
-            console.log("Insertando respondent...", respondent);
+            console.log('Insertando respondent...', respondent);
             const response = await this.db.runAsync(
               `INSERT INTO respondents (
                         name_interviewer, id_card_interviewer, date_interviewer,
@@ -59,11 +60,11 @@ export class RespondentRepository {
         });
       });
 
-      console.log("Inserción completada exitosamente.");
+      console.log('Inserción completada exitosamente.');
 
       return lastInsertRowId;
     } catch (error) {
-      console.error("Error al insertar respondent:", error.message);
+      console.error('Error al insertar respondent:', error.message);
     }
   }
 
@@ -73,10 +74,10 @@ export class RespondentRepository {
   async findById(id) {
     const sql = `SELECT * FROM respondents WHERE id = ?`;
     try {
-      const result = await this.db.getAsync(sql, [id]);
+      const result = await this.db.getFirstAsync(sql, [id]);
       return result;
     } catch (error) {
-      console.error("Error al obtener el encuestado por ID:", error.message);
+      console.error('Error al obtener el encuestado por ID:', error.message);
     }
   }
 }
