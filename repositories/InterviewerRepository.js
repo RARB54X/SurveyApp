@@ -11,8 +11,13 @@ export class InterviewerRepository {
           try {
             console.log("Insertando ...", interviewer);
             const response = await this.db.runAsync(
-              `INSERT INTO interviewers (name, id_card, date) VALUES (?, ?, ?);`,
-              [interviewer.name, interviewer.idCard, interviewer.date]
+              `INSERT INTO interviewers (respondent_id, name, id_card, date) VALUES (?, ?, ?, ?);`,
+              [
+                interviewer.respondentId,
+                interviewer.name,
+                interviewer.idCard,
+                interviewer.date,
+              ]
             );
             resolve(response.lastInsertRowId);
           } catch (error) {

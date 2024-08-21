@@ -12,15 +12,18 @@ export class RespondentRepository {
             console.log("Insertando respondent...", respondent);
             const response = await this.db.runAsync(
               `INSERT INTO respondents (
+                        name_interviewer, id_card_interviewer, date_interviewer,
                         first_name, last_name, supervisor_elaborates, nickname, birth_date, age, 
                         document_type, id_number, place_of_birth, place_of_residence, 
                         education, profession_occupation, marital_status, incorporation_date, 
                         incorporation_place, who_incorporated, received_supervisor, incorporation_structure, 
                         other_structure, position_supervisor, duration, tasks, reason_for_incorporation, 
-                        parental_illness, family_agreement, has_previous_experience, mother_id, father_id, 
-                        spouse_id, interviewer_id
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`,
+                        parental_illness, family_agreement, has_previous_experience
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`,
               [
+                respondent.nameInterviewer,
+                respondent.idCardInterviewer,
+                respondent.dateInterviewer,
                 respondent.firstName,
                 respondent.lastName,
                 respondent.supervisorElaborates,
@@ -47,10 +50,6 @@ export class RespondentRepository {
                 respondent.parentalIllness,
                 respondent.familyAgreement,
                 respondent.hasPreviousExperience,
-                respondent.motherId,
-                respondent.fatherId,
-                respondent.spouseId,
-                respondent.interviewerId,
               ]
             );
             resolve(response.lastInsertRowId);
@@ -60,7 +59,7 @@ export class RespondentRepository {
         });
       });
 
-      console.log("Insertación completada exitosamente.");
+      console.log("Inserción completada exitosamente.");
 
       return lastInsertRowId;
     } catch (error) {
@@ -70,5 +69,14 @@ export class RespondentRepository {
 
   findAll() {
     return this.db.getAllAsync(`SELECT * FROM respondents`);
+  }
+  async findById(id) {
+    const sql = `SELECT * FROM respondents WHERE id = ?`;
+    try {
+      const result = await this.db.getAsync(sql, [id]);
+      return result;
+    } catch (error) {
+      console.error("Error al obtener el encuestado por ID:", error.message);
+    }
   }
 }

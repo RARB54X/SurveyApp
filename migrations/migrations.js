@@ -9,15 +9,6 @@ export async function migrateDbIfNeeded(db) {
   if (currentDbVersion === 0) {
     await db.execAsync(`
 PRAGMA journal_mode = 'wal';
-CREATE TABLE IF NOT EXISTS interviewers (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  name TEXT NOT NULL,
-  id_card TEXT NOT NULL,
-  date DATE DEFAULT (date('now'))
-);
-  `);
-    await db.execAsync(`
-PRAGMA journal_mode = 'wal';
 CREATE TABLE IF NOT EXISTS father (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   respondent_id INTEGER,
@@ -269,6 +260,9 @@ CREATE TABLE IF NOT EXISTS other_questions (
 PRAGMA journal_mode = 'wal';
 CREATE TABLE IF NOT EXISTS respondents (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name_interviewer TEXT,
+  id_card_interviewer TEXT,
+  date_interviewer DATE DEFAULT (date('now')),
   first_name TEXT NOT NULL,
   last_name TEXT,
   supervisor_elaborates TEXT,
@@ -294,12 +288,7 @@ CREATE TABLE IF NOT EXISTS respondents (
   reason_for_incorporation TEXT,
   parental_illness TEXT,
   family_agreement TEXT,
-  has_previous_experience TEXT,
-  mother_id INTEGER,
-  father_id INTEGER,
-  spouse_id INTEGER,
-  interviewer_id INTEGER,
-  FOREIGN KEY (interviewer_id) REFERENCES interviewers(id)
+  has_previous_experience TEXT
 );
     `);
     currentDbVersion = 1;

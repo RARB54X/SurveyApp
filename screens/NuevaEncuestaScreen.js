@@ -1,7 +1,7 @@
 import { Picker } from "@react-native-picker/picker";
 import { useNavigation } from "@react-navigation/native"; // Importar useNavigation
 import { useSQLiteContext } from "expo-sqlite/next";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   ScrollView,
   Text,
@@ -14,17 +14,14 @@ import { Checkbox } from "react-native-paper"; // Importar Checkbox
 import estadoCivilOptions from "../data/estadoCivil"; // Ajusta la ruta si es necesario
 import localidades from "../data/localidades"; // Asegúrate de que la ruta es correcta
 import nivelesEstudio from "../data/nivelesEstudio"; // Asegúrate de que la ruta es correcta
-import { InterviewerRepository } from "../repositories/InterviewerRepository";
 import { RespondentRepository } from "../repositories/RespondentRepository";
 import { nuevaEncuestaStyles } from "../styles/nuevaEncuestaStyles"; // Ajusta la ruta si es necesario
 
-const NuevaEncuestaScreen = () => {
+const NuevaEncuestaScreen = ({ route }) => {
+  const { id } = route.params; //
   const db = useSQLiteContext();
-  React.useEffect(() => {
-    db.withTransactionAsync(async () => {
-      await getData();
-    });
-  }, [db]);
+
+  // Función para cargar los datos del encuestado
 
   const navigation = useNavigation(); // Inicializar useNavigation
   // datos encuestador
@@ -73,7 +70,7 @@ const NuevaEncuestaScreen = () => {
   const [haPertenecidoFuerzasMilitares, setHaPertenecidoFuerzasMilitares] =
     useState("");
 
-  const interviewerRepository = new InterviewerRepository(db);
+  // const interviewerRepository = new InterviewerRepository(db);
   const respondentRepository = new RespondentRepository(db);
   //fecha encuesta
   const handleConfirm = (date) => {
@@ -89,53 +86,6 @@ const NuevaEncuestaScreen = () => {
   const handleIncorporacionConfirm = (date) => {
     setFechaIncorporacion(date);
     setIncorporacionPickerVisibility(false);
-  };
-
-  async function getData() {
-    const result = await interviewerRepository.findAll();
-    // console.log("interviewers", result);
-  }
-  //Boton
-  const handleSubmit = async () => {
-    const interviewerId = await interviewerRepository.create({
-      name: nombreEncuestador, // Valor del estado nombreEncuestador
-      idCard: idCardEncuestador, // Valor del estado idCardEncuestador
-      date: formatDate(fecha),
-    });
-
-    const respondentId = await respondentRepository.create({
-      firstName: nombre,
-      lastName: apellido,
-      supervisorElaborates: mandoElabora,
-      nickname: seudonimo,
-      birthDate: formatDate(fechaNacimiento),
-      age: edad,
-      documentType: tipoDocumento,
-      idNumber: numeroDocumento,
-      placeOfBirth: lugarNacimiento,
-      placeOfResidence: lugarVivienda,
-      education: nivelEstudio,
-      professionOccupation: profesion,
-      maritalStatus: estadoCivil,
-      incorporationDate: formatDate(fechaIncorporacion),
-      incorporationPlace: lugarIncorporacion,
-      whoIncorporated: quienIncorporo,
-      receivedSupervisor: mandoRecibido,
-      incorporationStructure: estructuraIncorporacion,
-      otherStructure: otrasEstructuras,
-      positionSupervisor: mandosACargo,
-      duration: tiempoPermanecido,
-      tasks: tareasDesempenadas,
-      reasonForIncorporation: porqueIncorporacion,
-      parentalIllness: enfermedadesPadecidas,
-      familyAgreement: familiaDeAcuerdo,
-      hasPreviousExperience: haPertenecidoFuerzasMilitares,
-      interviewer_id: interviewerId,
-    });
-
-    console.log("respondentId", respondentId);
-
-    navigation.navigate("DatosFamiliares", { respondentId });
   };
 
   const localidadesItems = (
@@ -171,6 +121,57 @@ const NuevaEncuestaScreen = () => {
     const month = String(d.getMonth() + 1).padStart(2, "0"); // Meses empiezan desde 0
     const day = String(d.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
+  };
+  //Boton
+  const handleSubmit = async () => {
+    try {
+      // Crear el encuestado y obtener su ID
+      const respondentId = await respondentRepository.create({
+        nameInterviewer: nombreEncuestador, // Asignar el nombre del encuestador
+        idCardInterviewer: idCardEncuestador, // Asignar la cédula del encuestador
+        dateInterviewer: formatDate(fecha), // Asignar la fecha de la encuesta
+        firstName: nombre,
+        lastName: apellido,
+        supervisorElaborates: mandoElabora,
+        nickname: seudonimo,
+        birthDate: formatDate(fechaNacimiento),
+        age: edad,
+        documentType: tipoDocumento,
+        idNumber: numeroDocumento,
+        placeOfBirth: lugarNacimiento,
+        placeOfResidence: lugarVivienda,
+        education: nivelEstudio,
+        professionOccupation: profesion,
+        maritalStatus: estadoCivil,
+        incorporationDate: formatDate(fechaIncorporacion),
+        incorporationPlace: lugarIncorporacion,
+        whoIncorporated: quienIncorporo,
+        receivedSupervisor: mandoRecibido,
+        incorporationStructure: estructuraIncorporacion,
+        otherStructure: otrasEstructuras,
+        positionSupervisor: mandosACargo,
+        duration: tiempoPermanecido,
+        tasks: tareasDesempenadas,
+        reasonForIncorporation: porqueIncorporacion,
+        parentalIllness: enfermedadesPadecidas,
+        familyAgreement: familiaDeAcuerdo,
+        hasPreviousExperience: haPertenecidoFuerzasMilitares,
+      });
+
+      // Verificar si se creó el encuestado correctamente
+      if (!respondentId) {
+        console.error("No se pudo crear el encuestado.");
+        return;
+      }
+
+      // Redirigir a la siguiente pantalla con el ID del encuestado
+      navigation.navigate("DatosFamiliares", { respondentId });
+    } catch (error) {
+      console.error(
+        "Error al crear el encuestado o el entrevistador:",
+        error.message
+      );
+    }
   };
 
   return (

@@ -1,72 +1,60 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet } from "react-native";
 
 const revisarEncuestaStyles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#f2f2f2',
+    flex: 1, // Ocupa toda la pantalla
+    paddingHorizontal: 20,
+    paddingTop: 20,
   },
-  scrollContainer: {
-    flex: 1,
-    paddingHorizontal: 16,
-    paddingTop: 16,
+  encuestadorContainer: {
+    marginTop: 10,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 5,
+    backgroundColor: "#f9f9f9",
+    marginBottom: 20,
   },
-  contentContainer: {
-    paddingBottom: 100, // Espacio para el botón de PDF
-  },
-  encuestadoContainer: {
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    padding: 16,
-    marginBottom: 16,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  infoContainer: {
-    flex: 3,
-  },
-  nombre: {
+  label: {
     fontSize: 16,
-    fontWeight: 'bold',
+    marginBottom: 5,
   },
-  documento: {
-    fontSize: 14,
-    color: '#666',
-  },
-  buttonsContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
+  buttonGroup: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 10,
   },
   modifyButton: {
-    backgroundColor: '#4caf50',
-    borderRadius: 4,
-    padding: 8,
-    marginRight: 8,
+    backgroundColor: "#007bff",
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 5,
   },
   deleteButton: {
-    backgroundColor: '#f44336',
-    borderRadius: 4,
-    padding: 8,
+    backgroundColor: "#dc3545",
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 5,
   },
   buttonText: {
-    color: '#fff',
-    fontWeight: 'bold',
+    color: "#fff",
+    textAlign: "center",
+    fontSize: 14,
   },
-  pdfButton: {
-    backgroundColor: '#2196f3',
-    borderRadius: 4,
-    padding: 16,
-    position: 'absolute',
-    bottom: 0,
-    width: '100%',
-    alignItems: 'center',
+  fixedPdfButton: {
+    // Estilo para el botón fijo en la parte inferior
+    backgroundColor: "#28a745",
+    paddingVertical: 10,
+    borderRadius: 5,
+    position: "absolute", // Fijar en la parte inferior
+    bottom: 10, // Ajustar según sea necesario
+    left: 20,
+    right: 20,
   },
   pdfButtonText: {
-    color: '#fff',
+    color: "#fff",
+    textAlign: "center",
     fontSize: 16,
-    fontWeight: 'bold',
   },
 });
 
