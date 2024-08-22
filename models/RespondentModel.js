@@ -1,0 +1,65 @@
+export class RespondentModel {
+  nameInterviewer;
+  idCardInterviewer;
+  dateInterviewer;
+  firstName;
+  lastName;
+  supervisorElaborates;
+  nickname;
+  birthDate;
+  age;
+  documentType;
+  idNumber;
+  placeOfBirth;
+  placeOfResidence;
+  education;
+  professionOccupation;
+  maritalStatus;
+  incorporationDate;
+  incorporationPlace;
+  whoIncorporated;
+  receivedSupervisor;
+  incorporationStructure;
+  otherStructure;
+  positionSupervisor;
+  duration;
+  tasks;
+  reasonForIncorporation;
+  parentalIllness;
+  familyAgreement;
+  hasPreviousExperience;
+
+  static fromObject(data) {
+    const respondent = new RespondentModel();
+    respondent.nameInterviewer = data.name_interviewer;
+    respondent.idCardInterviewer = data.id_card_interviewer;
+    respondent.dateInterviewer = data.date_interviewer;
+    respondent.firstName = data.first_name;
+    respondent.lastName = data.last_name;
+    respondent.supervisorElaborates = data.supervisor_elaborates;
+    respondent.nickname = data.nickname;
+    respondent.birthDate = data.birth_date;
+    respondent.age = data.age;
+    respondent.documentType = data.document_type;
+    respondent.idNumber = data.id_number;
+    respondent.placeOfBirth = data.place_of_birth;
+    respondent.placeOfResidence = data.place_of_residence;
+    respondent.education = data.education;
+    respondent.professionOccupation = data.profession_occupation;
+    respondent.maritalStatus = data.marital_status;
+    respondent.incorporationDate = data.incorporation_date;
+    respondent.incorporationPlace = data.incorporation_place;
+    respondent.whoIncorporated = data.who_incorporated;
+    respondent.receivedSupervisor = data.received_supervisor;
+    respondent.incorporationStructure = data.incorporation_structure;
+    respondent.otherStructure = data.other_structure;
+    respondent.positionSupervisor = data.position_supervisor;
+    respondent.duration = data.duration;
+    respondent.tasks = data.tasks;
+    respondent.reasonForIncorporation = data.reason_for_incorporation;
+    respondent.parentalIllness = data.parental_illness;
+    respondent.familyAgreement = data.family_agreement;
+    respondent.hasPreviousExperience = data.has_previous_experience;
+    return respondent;
+  }
+}

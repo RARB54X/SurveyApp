@@ -23,10 +23,9 @@ const RevisarEncuestasScreen = ({ navigation }) => {
   }, []);
 
   const handleModify = (id) => {
-    const respondentIDMod = id;
-    navigation.navigate('NuevaEncuesta', { id: respondentIDMod });
+    navigation.navigate('NuevaEncuesta', { respondentId: id });
     // Lógica para modificar el encuestado con el ID correspondiente
-    console.log('Modificar encuestado con ID:', respondentIDMod);
+    console.log('Modificar encuestado con ID:', id);
   };
 
   const handleDelete = (id) => {

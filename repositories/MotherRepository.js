@@ -1,7 +1,10 @@
+import { MotherModel } from '../models/MotherModel';
+import { useSQLiteContext } from 'expo-sqlite/next';
+
 export class MotherRepository {
   db;
 
-  constructor(db) {
+  constructor(db = useSQLiteContext()) {
     this.db = db;
   }
 
@@ -10,7 +13,7 @@ export class MotherRepository {
       const lastInsertRowId = await new Promise((resolve, reject) => {
         this.db.withTransactionAsync(async () => {
           try {
-            console.log("Insertando madre", mother);
+            console.log('Insertando madre', mother);
 
             // Consulta SQL para insertar en mother
             const response = await this.db.runAsync(
@@ -37,10 +40,10 @@ export class MotherRepository {
           }
         });
       });
-      console.log("Mother id insertado:", lastInsertRowId);
+      console.log('Mother id insertado:', lastInsertRowId);
       return lastInsertRowId;
     } catch (error) {
-      console.error("Error al insertar madre:", error.message);
+      console.error('Error al insertar madre:', error.message);
     }
   }
 
@@ -48,7 +51,23 @@ export class MotherRepository {
     try {
       return await this.db.getAllAsync(`SELECT * FROM mother`);
     } catch (error) {
-      console.error("Error al obtener madres:", error.message);
+      console.error('Error al obtener madres:', error.message);
+    }
+  }
+
+  async findByRespondentId(respondentId) {
+    try {
+      const result = await this.db.getFirstAsync(
+        `SELECT * FROM mother WHERE respondent_id = ?;`,
+        [respondentId]
+      );
+
+      return MotherModel.fromObject(result);
+    } catch (error) {
+      console.error(
+        'Error al obtener madre por ID de encuestado:',
+        error.message
+      );
     }
   }
 }

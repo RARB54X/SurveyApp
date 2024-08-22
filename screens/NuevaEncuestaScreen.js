@@ -18,7 +18,7 @@ import { RespondentRepository } from '../repositories/RespondentRepository';
 import { nuevaEncuestaStyles } from '../styles/nuevaEncuestaStyles'; // Ajusta la ruta si es necesario
 
 const NuevaEncuestaScreen = ({ route }) => {
-  const { id } = route.params; //
+  const respondentId = route.params?.respondentId;
   const db = useSQLiteContext();
 
   // Función para cargar los datos del encuestado
@@ -123,49 +123,107 @@ const NuevaEncuestaScreen = ({ route }) => {
     return `${year}-${month}-${day}`;
   };
   //Boton
+
+  const getFormFields = () => ({
+    nameInterviewer: nombreEncuestador, // Asignar el nombre del encuestador
+    idCardInterviewer: idCardEncuestador, // Asignar la cédula del encuestador
+    dateInterviewer: formatDate(fecha), // Asignar la fecha de la encuesta
+    firstName: nombre,
+    lastName: apellido,
+    supervisorElaborates: mandoElabora,
+    nickname: seudonimo,
+    birthDate: formatDate(fechaNacimiento),
+    age: edad,
+    documentType: tipoDocumento,
+    idNumber: numeroDocumento,
+    placeOfBirth: lugarNacimiento,
+    placeOfResidence: lugarVivienda,
+    education: nivelEstudio,
+    professionOccupation: profesion,
+    maritalStatus: estadoCivil,
+    incorporationDate: formatDate(fechaIncorporacion),
+    incorporationPlace: lugarIncorporacion,
+    whoIncorporated: quienIncorporo,
+    receivedSupervisor: mandoRecibido,
+    incorporationStructure: estructuraIncorporacion,
+    otherStructure: otrasEstructuras,
+    positionSupervisor: mandosACargo,
+    duration: tiempoPermanecido,
+    tasks: tareasDesempenadas,
+    reasonForIncorporation: porqueIncorporacion,
+    parentalIllness: enfermedadesPadecidas,
+    familyAgreement: familiaDeAcuerdo,
+    hasPreviousExperience: haPertenecidoFuerzasMilitares,
+  });
+
+  const setFormFields = (respondent) => {
+    setNombreEncuestador(respondent.nameInterviewer);
+    setIdCardEncuestador(respondent.idCardInterviewer);
+    setFecha(
+      respondent.dateInterviewer && new Date(respondent.dateInterviewer)
+    );
+    setNombre(respondent.firstName);
+    setApellido(respondent.lastName);
+    setMandoElabora(respondent.supervisorElaborates);
+    setSeudonimo(respondent.nickname);
+    setFechaNacimiento(respondent.birthDate && new Date(respondent.birthDate));
+    setEdad(respondent.age);
+    setTipoDocumento(respondent.documentType);
+    setNumeroDocumento(respondent.idNumber);
+    setLugarNacimiento(respondent.placeOfBirth);
+    setLugarVivienda(respondent.placeOfResidence);
+    setNivelEstudio(respondent.education);
+    setProfesion(respondent.professionOccupation);
+    setEstadoCivil(respondent.maritalStatus);
+    setFechaIncorporacion(
+      respondent.incorporationDate && new Date(respondent.incorporationDate)
+    );
+    setLugarIncorporacion(respondent.incorporationPlace);
+    setQuienIncorporo(respondent.whoIncorporated);
+    setMandoRecibido(respondent.receivedSupervisor);
+    setEstructuraIncorporacion(respondent.incorporationStructure);
+    setOtrasEstructuras(respondent.otherStructure);
+    setMandosACargo(respondent.positionSupervisor);
+    setTiempoPermanecido(respondent.duration);
+    setTareasDesempenadas(respondent.tasks);
+    setPorqueIncorporacion(respondent.reasonForIncorporation);
+    setEnfermedadesPadecidas(respondent.parentalIllness);
+    setFamiliaDeAcuerdo(respondent.familyAgreement);
+    setHaPertenecidoFuerzasMilitares(respondent.hasPreviousExperience);
+  };
+
   const handleSubmit = async () => {
     try {
       // Crear el encuestado y obtener su ID
-      const respondentId = await respondentRepository.create({
-        nameInterviewer: nombreEncuestador, // Asignar el nombre del encuestador
-        idCardInterviewer: idCardEncuestador, // Asignar la cédula del encuestador
-        dateInterviewer: formatDate(fecha), // Asignar la fecha de la encuesta
-        firstName: nombre,
-        lastName: apellido,
-        supervisorElaborates: mandoElabora,
-        nickname: seudonimo,
-        birthDate: formatDate(fechaNacimiento),
-        age: edad,
-        documentType: tipoDocumento,
-        idNumber: numeroDocumento,
-        placeOfBirth: lugarNacimiento,
-        placeOfResidence: lugarVivienda,
-        education: nivelEstudio,
-        professionOccupation: profesion,
-        maritalStatus: estadoCivil,
-        incorporationDate: formatDate(fechaIncorporacion),
-        incorporationPlace: lugarIncorporacion,
-        whoIncorporated: quienIncorporo,
-        receivedSupervisor: mandoRecibido,
-        incorporationStructure: estructuraIncorporacion,
-        otherStructure: otrasEstructuras,
-        positionSupervisor: mandosACargo,
-        duration: tiempoPermanecido,
-        tasks: tareasDesempenadas,
-        reasonForIncorporation: porqueIncorporacion,
-        parentalIllness: enfermedadesPadecidas,
-        familyAgreement: familiaDeAcuerdo,
-        hasPreviousExperience: haPertenecidoFuerzasMilitares,
-      });
+      if (respondentId) {
+        const response = await respondentRepository.update({
+          ...getFormFields(),
+          id: respondentId,
+        });
 
-      // Verificar si se creó el encuestado correctamente
-      if (!respondentId) {
-        console.error('No se pudo crear el encuestado.');
-        return;
+        if (!response) {
+          console.error('No se pudo actualizar el encuestado.');
+          return;
+        }
+
+        console.log('Encuestado actualizado correctamente.');
+        navigation.navigate('DatosFamiliares', { respondentId });
+      } else {
+        const newRespondentId = await respondentRepository.create(
+          getFormFields()
+        );
+
+        // Verificar si se creó el encuestado correctamente
+        if (!newRespondentId) {
+          console.error('No se pudo crear el encuestado.');
+          return;
+        }
+        navigation.navigate('DatosFamiliares', {
+          respondentId: newRespondentId,
+        });
       }
 
       // Redirigir a la siguiente pantalla con el ID del encuestado
-      navigation.navigate('DatosFamiliares', { respondentId });
     } catch (error) {
       console.error(
         'Error al crear el encuestado o el entrevistador:',
@@ -174,18 +232,21 @@ const NuevaEncuestaScreen = ({ route }) => {
     }
   };
 
-  const loadRespondent = async (id) => {
-    const respondent = await respondentRepository.findById(id);
+  const loadRespondent = async (respondentId) => {
+    if (!respondentId) {
+      return;
+    }
+    const respondent = await respondentRepository.findById(respondentId);
 
     if (!respondent) {
       return;
     }
-    setNombreEncuestador(respondent.name_interviewer);
+    setFormFields(respondent);
   };
 
   useEffect(() => {
-    loadRespondent(id);
-  }, [id]);
+    loadRespondent(respondentId);
+  }, [respondentId]);
 
   return (
     <ScrollView contentContainerStyle={nuevaEncuestaStyles.container}>

@@ -1,7 +1,9 @@
+import { useSQLiteContext } from 'expo-sqlite/next';
+import { SiblingModel } from '../models/SiblingModel';
 export class SiblingsRepository {
   db;
 
-  constructor(db) {
+  constructor(db = useSQLiteContext()) {
     this.db = db;
   }
 
@@ -10,7 +12,7 @@ export class SiblingsRepository {
       const lastInsertRowId = await new Promise((resolve, reject) => {
         this.db.withTransactionAsync(async () => {
           try {
-            console.log("Insertando hermano", sibling);
+            console.log('Insertando hermano', sibling);
 
             // Consulta SQL para insertar en siblings
             const response = await this.db.runAsync(
@@ -37,10 +39,10 @@ export class SiblingsRepository {
           }
         });
       });
-      console.log("Siblings id insertado:", lastInsertRowId);
+      console.log('Siblings id insertado:', lastInsertRowId);
       return lastInsertRowId;
     } catch (error) {
-      console.error("Error al insertar hermano:", error.message);
+      console.error('Error al insertar hermano:', error.message);
     }
   }
 
@@ -48,7 +50,41 @@ export class SiblingsRepository {
     try {
       return await this.db.getAllAsync(`SELECT * FROM siblings`);
     } catch (error) {
-      console.error("Error al obtener hermanos:", error.message);
+      console.error('Error al obtener hermanos:', error.message);
+    }
+  }
+
+  async findByRespondentId(respondentId) {
+    try {
+      const result = await this.db.getAllAsync(
+        `SELECT * FROM siblings WHERE respondent_id = ?;`,
+        [respondentId]
+      );
+      if (!result?.length) {
+        return [];
+      }
+      return result.map(SiblingModel.fromObject);
+    } catch (error) {
+      console.error(
+        'Error al obtener hermanos por ID de encuestado:',
+        error.message
+      );
+      return [];
+    }
+  }
+
+  async findOne(findOptions) {
+    try {
+      const result = await this.db.getFirstAsync(
+        `SELECT * FROM siblings WHERE respondent_id = ? AND name = ?;`,
+        [findOptions.respondentId, findOptions.name]
+      );
+      return SiblingModel.fromObject(result);
+    } catch (error) {
+      console.error(
+        'Error al obtener hermano por ID de encuestado y nombre:',
+        error.message
+      );
     }
   }
 }
