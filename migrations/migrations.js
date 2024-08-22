@@ -1,7 +1,7 @@
 export async function migrateDbIfNeeded(db) {
   const DATABASE_VERSION = 1;
   let { user_version: currentDbVersion } = await db.getFirstAsync(
-    "PRAGMA user_version"
+    'PRAGMA user_version'
   );
   if (currentDbVersion >= DATABASE_VERSION) {
     return;

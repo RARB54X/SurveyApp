@@ -68,6 +68,7 @@ const DatosFamiliaresScreen = ({ route, navigation }) => {
     setHermanos([
       ...hermanos,
       {
+        id: null,
         nombre: '',
         edad: '',
         ocupacion: '',
@@ -80,13 +81,12 @@ const DatosFamiliaresScreen = ({ route, navigation }) => {
     ]);
   };
 
-  const handleRemoveHermano = (index) => {
-    // const hermano = hermanos[index];
-    // const sibling = await siblingsRepository.findOne({respondentId, name: hermano.nombre});
-    // if (sibling) {
-    //   await siblingsRepository.delete(sibling.id);
-    // }
-
+  const handleRemoveHermano = async (index) => {
+    const hermano = hermanos[index];
+    const sibling = await siblingsRepository.findById(hermano.id);
+    if (sibling) {
+      await siblingsRepository.delete(sibling.id);
+    }
     setHermanos(hermanos.filter((_, i) => i !== index));
   };
 
@@ -144,27 +144,25 @@ const DatosFamiliaresScreen = ({ route, navigation }) => {
     try {
       // Itera sobre el array de hermanos y guarda cada uno en la base de datos
       for (const hermano of hermanos) {
-        // const hermanoEntity = await siblingsRepository.findOne({
-        //   respondentId,
-        //   name: hermano.nombre,
-        // });
+        const hermanoEntity = await siblingsRepository.findById(hermano.id);
 
-        // if (hermanoEntity) {
-        //   await siblingsRepository.update();
-        // } else {
-        //   // create
-        // }
-        await siblingsRepository.create({
-          respondentId,
-          name: hermano.nombre,
-          age: hermano.edad,
-          occupation: hermano.ocupacion,
-          educationLevel: hermano.nivelEstudio,
-          residenceSite: hermano.residencia,
-          currentAddress: hermano.direccionActual,
-          phone: hermano.telefono,
-          spouse: hermano.conyugue,
-        });
+        if (hermanoEntity) {
+          console.log('Actualizando hermano:', hermanoEntity);
+          // await siblingsRepository.update();
+        } else {
+          // create
+          await siblingsRepository.create({
+            respondentId,
+            name: hermano.nombre,
+            age: hermano.edad,
+            occupation: hermano.ocupacion,
+            educationLevel: hermano.nivelEstudio,
+            residenceSite: hermano.residencia,
+            currentAddress: hermano.direccionActual,
+            phone: hermano.telefono,
+            spouse: hermano.conyugue,
+          });
+        }
       }
       console.log('Todos los hermanos han sido guardados exitosamente.');
     } catch (error) {
@@ -262,6 +260,7 @@ const DatosFamiliaresScreen = ({ route, navigation }) => {
   };
 
   const setSiblingFields = (sibling) => ({
+    id: sibling.id,
     nombre: sibling.name,
     edad: sibling.age,
     ocupacion: sibling.occupation,

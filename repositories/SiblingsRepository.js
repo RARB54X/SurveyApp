@@ -73,18 +73,27 @@ export class SiblingsRepository {
     }
   }
 
-  async findOne(findOptions) {
+  async findById(id) {
     try {
+      if (!id) {
+        return null;
+      }
       const result = await this.db.getFirstAsync(
-        `SELECT * FROM siblings WHERE respondent_id = ? AND name = ?;`,
-        [findOptions.respondentId, findOptions.name]
+        `SELECT * FROM siblings WHERE id = ?;`,
+        [id]
       );
       return SiblingModel.fromObject(result);
     } catch (error) {
-      console.error(
-        'Error al obtener hermano por ID de encuestado y nombre:',
-        error.message
-      );
+      console.error('Error al obtener hermano por ID:', error.message);
+      return null;
+    }
+  }
+
+  async delete(id) {
+    try {
+      await this.db.runAsync(`DELETE FROM siblings WHERE id = ?;`, [id]);
+    } catch (error) {
+      console.error('Error al eliminar hermano por ID:', error.message);
     }
   }
 }
