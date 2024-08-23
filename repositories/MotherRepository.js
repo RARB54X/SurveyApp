@@ -1,5 +1,5 @@
-import { MotherModel } from '../models/MotherModel';
-import { useSQLiteContext } from 'expo-sqlite/next';
+import { MotherModel } from "../models/MotherModel";
+import { useSQLiteContext } from "expo-sqlite/next";
 
 export class MotherRepository {
   db;
@@ -7,13 +7,12 @@ export class MotherRepository {
   constructor(db = useSQLiteContext()) {
     this.db = db;
   }
-
   async create(mother) {
     try {
       const lastInsertRowId = await new Promise((resolve, reject) => {
         this.db.withTransactionAsync(async () => {
           try {
-            console.log('Insertando madre', mother);
+            console.log("Insertando madre", mother);
 
             // Consulta SQL para insertar en mother
             const response = await this.db.runAsync(
@@ -40,10 +39,37 @@ export class MotherRepository {
           }
         });
       });
-      console.log('Mother id insertado:', lastInsertRowId);
+      console.log("Mother id insertado:", lastInsertRowId);
       return lastInsertRowId;
     } catch (error) {
-      console.error('Error al insertar madre:', error.message);
+      console.error("Error al insertar madre:", error.message);
+    }
+  }
+  async update(mother) {
+    try {
+      const response = await this.db.runAsync(
+        `UPDATE mother SET 
+                name = ?, age = ?, occupation = ?, education_level = ?, residence_site = ?, 
+                current_address = ?, phone = ?, spouse = ?
+            WHERE id = ?;`,
+        [
+          mother.name,
+          mother.age,
+          mother.occupation,
+          mother.educationLevel,
+          mother.residenceSite,
+          mother.currentAddress,
+          mother.phone,
+          mother.spouse,
+          mother.id,
+        ]
+      );
+
+      console.log("Actualización completada exitosamente.");
+
+      return response.changes > 0;
+    } catch (error) {
+      console.error("Error al actualizar mother:", error.message);
     }
   }
 
@@ -51,7 +77,7 @@ export class MotherRepository {
     try {
       return await this.db.getAllAsync(`SELECT * FROM mother`);
     } catch (error) {
-      console.error('Error al obtener madres:', error.message);
+      console.error("Error al obtener madres:", error.message);
     }
   }
 
@@ -65,7 +91,7 @@ export class MotherRepository {
       return MotherModel.fromObject(result);
     } catch (error) {
       console.error(
-        'Error al obtener madre por ID de encuestado:',
+        "Error al obtener madre por ID de encuestado:",
         error.message
       );
     }

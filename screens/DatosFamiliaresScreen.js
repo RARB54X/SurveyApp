@@ -1,19 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   View,
   Text,
   TextInput,
   TouchableOpacity,
   ScrollView,
-} from 'react-native';
-import { Picker } from '@react-native-picker/picker'; // Para el selector de nivel de estudios
-import { datosFamiliaresStyles } from '../styles/datosFamiliaresStyles'; // Asegúrate de tener este archivo
-import { useSQLiteContext } from 'expo-sqlite/next';
-import { MotherRepository } from '../repositories/MotherRepository';
-import { FatherRepository } from '../repositories/FatherRepository';
-import { SiblingsRepository } from '../repositories/SiblingsRepository';
-import { SpouseRepository } from '../repositories/SpouseRepository';
-import { ChildrenRepository } from '../repositories/ChildrenRepository';
+} from "react-native";
+import { Picker } from "@react-native-picker/picker"; // Para el selector de nivel de estudios
+import { datosFamiliaresStyles } from "../styles/datosFamiliaresStyles"; // Asegúrate de tener este archivo
+import { useSQLiteContext } from "expo-sqlite/next";
+import { MotherRepository } from "../repositories/MotherRepository";
+import { FatherRepository } from "../repositories/FatherRepository";
+import { SiblingsRepository } from "../repositories/SiblingsRepository";
+import { SpouseRepository } from "../repositories/SpouseRepository";
+import { ChildrenRepository } from "../repositories/ChildrenRepository";
 
 const DatosFamiliaresScreen = ({ route, navigation }) => {
   const respondentId = route.params?.respondentId;
@@ -26,34 +26,34 @@ const DatosFamiliaresScreen = ({ route, navigation }) => {
   }, [db]);
 
   //estado para la madre
-  const [nombreMadre, setNombreMadre] = useState('');
-  const [edadMadre, setEdadMadre] = useState('');
-  const [ocupacionMadre, setOcupacionMadre] = useState('');
-  const [nivelEstudioMadre, setNivelEstudioMadre] = useState('');
-  const [residenciaMadre, setResidenciaMadre] = useState('');
-  const [direccionActualMadre, setDireccionActualMadre] = useState('');
-  const [telefonoMadre, setTelefonoMadre] = useState('');
-  const [conyugueMadre, setConyugueMadre] = useState('');
+  const [nombreMadre, setNombreMadre] = useState("");
+  const [edadMadre, setEdadMadre] = useState("");
+  const [ocupacionMadre, setOcupacionMadre] = useState("");
+  const [nivelEstudioMadre, setNivelEstudioMadre] = useState("");
+  const [residenciaMadre, setResidenciaMadre] = useState("");
+  const [direccionActualMadre, setDireccionActualMadre] = useState("");
+  const [telefonoMadre, setTelefonoMadre] = useState("");
+  const [conyugueMadre, setConyugueMadre] = useState("");
 
   // Estado para el padre
-  const [nombrePadre, setNombrePadre] = useState('');
-  const [edadPadre, setEdadPadre] = useState('');
-  const [ocupacionPadre, setOcupacionPadre] = useState('');
-  const [nivelEstudioPadre, setNivelEstudioPadre] = useState('');
-  const [residenciaPadre, setResidenciaPadre] = useState('');
-  const [direccionActualPadre, setDireccionActualPadre] = useState('');
-  const [telefonoPadre, setTelefonoPadre] = useState('');
-  const [conyuguePadre, setConyuguePadre] = useState('');
+  const [nombrePadre, setNombrePadre] = useState("");
+  const [edadPadre, setEdadPadre] = useState("");
+  const [ocupacionPadre, setOcupacionPadre] = useState("");
+  const [nivelEstudioPadre, setNivelEstudioPadre] = useState("");
+  const [residenciaPadre, setResidenciaPadre] = useState("");
+  const [direccionActualPadre, setDireccionActualPadre] = useState("");
+  const [telefonoPadre, setTelefonoPadre] = useState("");
+  const [conyuguePadre, setConyuguePadre] = useState("");
 
   // Estado para pareja
-  const [nombrePareja, setNombrePareja] = useState('');
-  const [edadPareja, setEdadPareja] = useState('');
-  const [ocupacionPareja, setOcupacionPareja] = useState('');
-  const [nivelEstudioPareja, setNivelEstudioPareja] = useState('');
-  const [residenciaPareja, setResidenciaPareja] = useState('');
-  const [direccionActualPareja, setDireccionActualPareja] = useState('');
-  const [telefonoPareja, setTelefonoPareja] = useState('');
-  const [conyuguePareja, setConyuguePareja] = useState('');
+  const [nombrePareja, setNombrePareja] = useState("");
+  const [edadPareja, setEdadPareja] = useState("");
+  const [ocupacionPareja, setOcupacionPareja] = useState("");
+  const [nivelEstudioPareja, setNivelEstudioPareja] = useState("");
+  const [residenciaPareja, setResidenciaPareja] = useState("");
+  const [direccionActualPareja, setDireccionActualPareja] = useState("");
+  const [telefonoPareja, setTelefonoPareja] = useState("");
+  const [conyuguePareja, setConyuguePareja] = useState("");
 
   const motherRepository = new MotherRepository(db);
   const fatherRepository = new FatherRepository(db);
@@ -69,14 +69,14 @@ const DatosFamiliaresScreen = ({ route, navigation }) => {
       ...hermanos,
       {
         id: null,
-        nombre: '',
-        edad: '',
-        ocupacion: '',
-        nivelEstudio: '',
-        residencia: '',
-        direccionActual: '',
-        telefono: '',
-        conyugue: '',
+        nombre: "",
+        edad: "",
+        ocupacion: "",
+        nivelEstudio: "",
+        residencia: "",
+        direccionActual: "",
+        telefono: "",
+        conyugue: "",
       },
     ]);
   };
@@ -102,14 +102,14 @@ const DatosFamiliaresScreen = ({ route, navigation }) => {
     setHijos([
       ...hijos,
       {
-        nombre: '',
-        edad: '',
-        ocupacion: '',
-        nivelEstudio: '',
-        residencia: '',
-        direccionActual: '',
-        telefono: '',
-        conyugue: '',
+        nombre: "",
+        edad: "",
+        ocupacion: "",
+        nivelEstudio: "",
+        residencia: "",
+        direccionActual: "",
+        telefono: "",
+        conyugue: "",
       },
     ]);
   };
@@ -126,19 +126,19 @@ const DatosFamiliaresScreen = ({ route, navigation }) => {
   };
   async function getData() {
     const result = await motherRepository.findAll();
-    console.log('madre', result);
+    console.log("madre", result);
   }
   async function getData() {
     const result = await fatherRepository.findAll();
-    console.log('padres', result);
+    console.log("padres", result);
   }
   async function getData() {
     const result = await spouseRepository.findAll();
-    console.log('pareja', result);
+    console.log("pareja", result);
   }
   async function getData() {
     const result = await childrenRepository.findAll();
-    console.log('Hijos', result);
+    console.log("Hijos", result);
   }
   const saveHermanos = async (hermanos, respondentId) => {
     try {
@@ -147,7 +147,7 @@ const DatosFamiliaresScreen = ({ route, navigation }) => {
         const hermanoEntity = await siblingsRepository.findById(hermano.id);
 
         if (hermanoEntity) {
-          console.log('Actualizando hermano:', hermanoEntity);
+          console.log("Actualizando hermano:", hermanoEntity);
           // await siblingsRepository.update();
         } else {
           // create
@@ -164,9 +164,9 @@ const DatosFamiliaresScreen = ({ route, navigation }) => {
           });
         }
       }
-      console.log('Todos los hermanos han sido guardados exitosamente.');
+      console.log("Todos los hermanos han sido guardados exitosamente.");
     } catch (error) {
-      console.error('Error al guardar los hermanos:', error.message);
+      console.error("Error al guardar los hermanos:", error.message);
     }
   };
 
@@ -186,9 +186,9 @@ const DatosFamiliaresScreen = ({ route, navigation }) => {
           // Aquí puedes agregar otros campos si los hay en el modelo de la base de datos
         });
       }
-      console.log('Todos los hijos han sido guardados exitosamente.');
+      console.log("Todos los hijos han sido guardados exitosamente.");
     } catch (error) {
-      console.error('Error al guardar los hijos:', error.message);
+      console.error("Error al guardar los hijos:", error.message);
     }
   };
 
@@ -203,6 +203,29 @@ const DatosFamiliaresScreen = ({ route, navigation }) => {
     phone: telefonoMadre,
     spouse: conyugueMadre,
   });
+  const getSpouseFields = () => ({
+    respondentId,
+    name: nombrePareja,
+    age: edadPareja,
+    occupation: ocupacionPareja,
+    educationLevel: nivelEstudioPareja,
+    residenceSite: residenciaPareja,
+    currentAddress: direccionActualPareja,
+    phone: telefonoPareja,
+    relationshipStatus: conyuguePareja,
+  });
+
+  const getFatherFields = () => ({
+    respondentId,
+    name: nombrePadre,
+    age: edadPadre,
+    occupation: ocupacionPadre,
+    educationLevel: nivelEstudioPadre,
+    residenceSite: residenciaPadre,
+    currentAddress: direccionActualPadre,
+    phone: telefonoPadre,
+    spouse: conyuguePadre,
+  });
 
   // Manejar el envío de los datos o navegación
 
@@ -210,42 +233,39 @@ const DatosFamiliaresScreen = ({ route, navigation }) => {
     const mother = await motherRepository.findByRespondentId(respondentId);
     if (mother) {
       // Actualizar los datos de la madre
-      // await motherRepository.update({
-      //   ...getMotherFields(),
-      //   id: mother.id,
-      // });
+      await motherRepository.update({
+        ...getMotherFields(),
+        id: mother.id,
+      });
     } else {
       await motherRepository.create(getMotherFields());
     }
+    const father = await fatherRepository.findByRespondentId(respondentId);
+    if (father) {
+      // Actualizar los datos del padre
+      await fatherRepository.update({
+        ...getFatherFields(),
+        id: father.id,
+      });
+    } else {
+      await fatherRepository.create(getFatherFields());
+    }
+    const spouse = await spouseRepository.findByRespondentId(respondentId);
+    if (spouse) {
+      // Actualizar los datos del spouse
+      await spouseRepository.update({
+        ...getSpouseFields(),
+        id: spouse.id,
+      });
+    } else {
+      await spouseRepository.create(getSpouseFields());
+    }
 
-    await fatherRepository.create({
-      respondentId,
-      name: nombrePadre,
-      age: edadPadre,
-      occupation: ocupacionPadre,
-      educationLevel: nivelEstudioPadre,
-      residenceSite: residenciaPadre,
-      currentAddress: direccionActualPadre,
-      phone: telefonoPadre,
-      spouse: conyuguePadre,
-    });
-
-    await spouseRepository.create({
-      respondentId,
-      name: nombrePareja,
-      age: edadPareja,
-      occupation: ocupacionPareja,
-      educationLevel: nivelEstudioPareja,
-      residenceSite: residenciaPareja,
-      currentAddress: direccionActualPareja,
-      phone: telefonoPareja,
-      relationshipStatus: conyuguePareja,
-    });
     await saveHermanos(hermanos, respondentId);
 
     await saveChildren(hijos, respondentId);
 
-    navigation.navigate('DatosInternos', { respondentId });
+    navigation.navigate("DatosInternos", { respondentId });
   };
 
   const setMotherFields = async (mother) => {
@@ -257,6 +277,26 @@ const DatosFamiliaresScreen = ({ route, navigation }) => {
     setDireccionActualMadre(mother.currentAddress);
     setTelefonoMadre(mother.phone);
     setConyugueMadre(mother.spouse);
+  };
+  const setFatherFields = async (father) => {
+    setNombrePadre(father.name);
+    setEdadPadre(father.age);
+    setOcupacionPadre(father.occupation);
+    setNivelEstudioPadre(father.educationLevel);
+    setResidenciaPadre(father.residenceSite);
+    setDireccionActualPadre(father.currentAddress);
+    setTelefonoPadre(father.phone);
+    setConyuguePadre(father.spouse);
+  };
+  const setSpouseFields = async (spouse) => {
+    setNombrePareja(spouse.name);
+    setEdadPareja(spouse.age);
+    setOcupacionPareja(spouse.occupation);
+    setNivelEstudioPareja(spouse.educationLevel);
+    setResidenciaPareja(spouse.residenceSite);
+    setDireccionActualPareja(spouse.currentAddress);
+    setTelefonoPareja(spouse.phone);
+    setConyuguePareja(spouse.relationshipStatus);
   };
 
   const setSiblingFields = (sibling) => ({
@@ -280,6 +320,24 @@ const DatosFamiliaresScreen = ({ route, navigation }) => {
     }
   };
 
+  const loadFatherData = async (respondentId) => {
+    if (!respondentId) return;
+
+    const father = await fatherRepository.findByRespondentId(respondentId);
+    if (father) {
+      setFatherFields(father);
+    }
+  };
+
+  const loadSpouseData = async (respondentId) => {
+    if (!respondentId) return;
+
+    const spouse = await spouseRepository.findByRespondentId(respondentId);
+    if (spouse) {
+      setSpouseFields(spouse);
+    }
+  };
+
   const loadSiblingData = async (respondentId) => {
     if (!respondentId) return;
 
@@ -292,6 +350,8 @@ const DatosFamiliaresScreen = ({ route, navigation }) => {
 
   React.useEffect(() => {
     loadMotherData(respondentId);
+    loadFatherData(respondentId);
+    loadSpouseData(respondentId);
     loadSiblingData(respondentId);
   }, [respondentId]);
 
@@ -457,7 +517,7 @@ const DatosFamiliaresScreen = ({ route, navigation }) => {
             style={datosFamiliaresStyles.input}
             value={hermano.nombre}
             onChangeText={(value) =>
-              handleHermanoChange(index, 'nombre', value)
+              handleHermanoChange(index, "nombre", value)
             }
             placeholder="Nombre"
           />
@@ -467,7 +527,7 @@ const DatosFamiliaresScreen = ({ route, navigation }) => {
             style={datosFamiliaresStyles.input}
             keyboardType="numeric"
             value={hermano.edad}
-            onChangeText={(value) => handleHermanoChange(index, 'edad', value)}
+            onChangeText={(value) => handleHermanoChange(index, "edad", value)}
             placeholder="Edad"
           />
 
@@ -476,7 +536,7 @@ const DatosFamiliaresScreen = ({ route, navigation }) => {
             style={datosFamiliaresStyles.input}
             value={hermano.ocupacion}
             onChangeText={(value) =>
-              handleHermanoChange(index, 'ocupacion', value)
+              handleHermanoChange(index, "ocupacion", value)
             }
             placeholder="Ocupación"
           />
@@ -486,7 +546,7 @@ const DatosFamiliaresScreen = ({ route, navigation }) => {
             selectedValue={hermano.nivelEstudio}
             style={datosFamiliaresStyles.picker}
             onValueChange={(value) =>
-              handleHermanoChange(index, 'nivelEstudio', value)
+              handleHermanoChange(index, "nivelEstudio", value)
             }
           >
             <Picker.Item label="Seleccione" value="" />
@@ -502,7 +562,7 @@ const DatosFamiliaresScreen = ({ route, navigation }) => {
             style={datosFamiliaresStyles.input}
             value={hermano.residencia}
             onChangeText={(value) =>
-              handleHermanoChange(index, 'residencia', value)
+              handleHermanoChange(index, "residencia", value)
             }
             placeholder="Sitio de Residencia"
           />
@@ -512,7 +572,7 @@ const DatosFamiliaresScreen = ({ route, navigation }) => {
             style={datosFamiliaresStyles.input}
             value={hermano.direccionActual}
             onChangeText={(value) =>
-              handleHermanoChange(index, 'direccionActual', value)
+              handleHermanoChange(index, "direccionActual", value)
             }
             placeholder="Dirección Actual"
           />
@@ -523,7 +583,7 @@ const DatosFamiliaresScreen = ({ route, navigation }) => {
             keyboardType="phone-pad"
             value={hermano.telefono}
             onChangeText={(value) =>
-              handleHermanoChange(index, 'telefono', value)
+              handleHermanoChange(index, "telefono", value)
             }
             placeholder="Teléfono"
           />
@@ -535,7 +595,7 @@ const DatosFamiliaresScreen = ({ route, navigation }) => {
             style={datosFamiliaresStyles.input}
             value={hermano.conyugue}
             onChangeText={(value) =>
-              handleHermanoChange(index, 'conyugue', value)
+              handleHermanoChange(index, "conyugue", value)
             }
             placeholder="Cónyuge o Pareja Actual"
           />
@@ -643,7 +703,7 @@ const DatosFamiliaresScreen = ({ route, navigation }) => {
           <TextInput
             style={datosFamiliaresStyles.input}
             value={hijo.nombre}
-            onChangeText={(valor) => actualizarHijo(index, 'nombre', valor)}
+            onChangeText={(valor) => actualizarHijo(index, "nombre", valor)}
             placeholder="Nombre"
           />
 
@@ -652,7 +712,7 @@ const DatosFamiliaresScreen = ({ route, navigation }) => {
             style={datosFamiliaresStyles.input}
             keyboardType="numeric"
             value={hijo.edad}
-            onChangeText={(valor) => actualizarHijo(index, 'edad', valor)}
+            onChangeText={(valor) => actualizarHijo(index, "edad", valor)}
             placeholder="Edad"
           />
 
@@ -660,7 +720,7 @@ const DatosFamiliaresScreen = ({ route, navigation }) => {
           <TextInput
             style={datosFamiliaresStyles.input}
             value={hijo.ocupacion}
-            onChangeText={(valor) => actualizarHijo(index, 'ocupacion', valor)}
+            onChangeText={(valor) => actualizarHijo(index, "ocupacion", valor)}
             placeholder="Ocupación"
           />
 
@@ -670,7 +730,7 @@ const DatosFamiliaresScreen = ({ route, navigation }) => {
             selectedValue={hijo.nivelEstudio}
             style={datosFamiliaresStyles.picker}
             onValueChange={(valor) =>
-              actualizarHijo(index, 'nivelEstudio', valor)
+              actualizarHijo(index, "nivelEstudio", valor)
             }
           >
             <Picker.Item label="Seleccione" value="" />
@@ -685,7 +745,7 @@ const DatosFamiliaresScreen = ({ route, navigation }) => {
           <TextInput
             style={datosFamiliaresStyles.input}
             value={hijo.residencia}
-            onChangeText={(valor) => actualizarHijo(index, 'residencia', valor)}
+            onChangeText={(valor) => actualizarHijo(index, "residencia", valor)}
             placeholder="Sitio de residencia"
           />
 
@@ -694,7 +754,7 @@ const DatosFamiliaresScreen = ({ route, navigation }) => {
             style={datosFamiliaresStyles.input}
             value={hijo.direccionActual}
             onChangeText={(valor) =>
-              actualizarHijo(index, 'direccionActual', valor)
+              actualizarHijo(index, "direccionActual", valor)
             }
             placeholder="Dirección Actual"
           />
@@ -704,7 +764,7 @@ const DatosFamiliaresScreen = ({ route, navigation }) => {
             style={datosFamiliaresStyles.input}
             keyboardType="phone-pad"
             value={hijo.telefono}
-            onChangeText={(valor) => actualizarHijo(index, 'telefono', valor)}
+            onChangeText={(valor) => actualizarHijo(index, "telefono", valor)}
             placeholder="Teléfono"
           />
           <Text style={datosFamiliaresStyles.label}>
@@ -714,7 +774,7 @@ const DatosFamiliaresScreen = ({ route, navigation }) => {
             style={datosFamiliaresStyles.input}
             value={hijo.conyugue}
             onChangeText={(value) =>
-              handleHermanoChange(index, 'conyugue', value)
+              handleHermanoChange(index, "conyugue", value)
             }
             placeholder="Cónyuge o Pareja Actual"
           />

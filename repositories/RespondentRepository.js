@@ -1,5 +1,5 @@
-import { useSQLiteContext } from 'expo-sqlite/next';
-import { RespondentModel } from '../models/RespondentModel';
+import { useSQLiteContext } from "expo-sqlite/next";
+import { RespondentModel } from "../models/RespondentModel";
 export class RespondentRepository {
   db;
   constructor(db = useSQLiteContext()) {
@@ -11,7 +11,7 @@ export class RespondentRepository {
       const lastInsertRowId = await new Promise((resolve, reject) => {
         this.db.withTransactionAsync(async () => {
           try {
-            console.log('Insertando respondent...', respondent);
+            console.log("Insertando respondent...", respondent);
             const response = await this.db.runAsync(
               `INSERT INTO respondents (
                         name_interviewer, id_card_interviewer, date_interviewer,
@@ -61,11 +61,11 @@ export class RespondentRepository {
         });
       });
 
-      console.log('Inserción completada exitosamente.');
+      console.log("Inserción completada exitosamente.");
 
       return lastInsertRowId;
     } catch (error) {
-      console.error('Error al insertar respondent:', error.message);
+      console.error("Error al insertar respondent:", error.message);
     }
   }
 
@@ -78,7 +78,7 @@ export class RespondentRepository {
                 document_type = ?, id_number = ?, place_of_birth = ?, place_of_residence = ?, 
                 education = ?, profession_occupation = ?, marital_status = ?, incorporation_date = ?, 
                 incorporation_place = ?, who_incorporated = ?, received_supervisor = ?, incorporation_structure = ?, 
-                other_structure = ?, position_supervisor = ?, duration = ?, tasks = ?, reason_for_incorporation = ?, 
+               other_structure = ?, position_supervisor = ?, duration = ?, tasks = ?, reason_for_incorporation = ?, 
                 parental_illness = ?, family_agreement = ?, has_previous_experience = ?
             WHERE id = ?;`,
         [
@@ -115,11 +115,11 @@ export class RespondentRepository {
         ]
       );
 
-      console.log('Actualización completada exitosamente.');
+      console.log("Actualización completada exitosamente.");
 
       return response.changes > 0;
     } catch (error) {
-      console.error('Error al actualizar respondent:', error.message);
+      console.error("Error al actualizar respondent:", error.message);
     }
   }
 
@@ -135,7 +135,7 @@ export class RespondentRepository {
 
       return RespondentModel.fromObject(result);
     } catch (error) {
-      console.error('Error al obtener el encuestado por ID:', error.message);
+      console.error("Error al obtener el encuestado por ID:", error.message);
     }
   }
 }

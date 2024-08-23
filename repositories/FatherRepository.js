@@ -1,10 +1,12 @@
+import { FatherModel } from "../models/FatherModel";
+import { useSQLiteContext } from "expo-sqlite/next";
+
 export class FatherRepository {
   db;
 
-  constructor(db) {
+  constructor(db = useSQLiteContext()) {
     this.db = db;
   }
-
   async create(father) {
     try {
       const lastInsertRowId = await new Promise((resolve, reject) => {
@@ -41,6 +43,48 @@ export class FatherRepository {
       return lastInsertRowId;
     } catch (error) {
       console.error("Error al insertar padre:", error.message);
+    }
+  }
+  async update(father) {
+    try {
+      const response = await this.db.runAsync(
+        `UPDATE father SET 
+                name = ?, age = ?, occupation = ?, education_level = ?, residence_site = ?, 
+                current_address = ?, phone = ?, spouse = ?
+            WHERE id = ?;`,
+        [
+          father.name,
+          father.age,
+          father.occupation,
+          father.educationLevel,
+          father.residenceSite,
+          father.currentAddress,
+          father.phone,
+          father.spouse,
+          father.id,
+        ]
+      );
+
+      console.log("Actualización completada exitosamente.");
+
+      return response.changes > 0;
+    } catch (error) {
+      console.error("Error al actualizar father:", error.message);
+    }
+  }
+  async findByRespondentId(respondentId) {
+    try {
+      const result = await this.db.getFirstAsync(
+        `SELECT * FROM father WHERE respondent_id = ?;`,
+        [respondentId]
+      );
+
+      return FatherModel.fromObject(result);
+    } catch (error) {
+      console.error(
+        "Error al obtener padre por ID de encuestado:",
+        error.message
+      );
     }
   }
 
