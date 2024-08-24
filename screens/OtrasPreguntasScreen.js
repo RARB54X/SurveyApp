@@ -12,7 +12,7 @@ import { OtherQuestionsRepository } from "../repositories/OtherQuestionsReposito
 import { useSQLiteContext } from "expo-sqlite/next";
 
 const OtrasPreguntasScreen = ({ route, navigation }) => {
-  const { respondentId } = route.params;
+  const respondentId = route.params?.respondentId;
   console.log("respondentId", respondentId);
   const db = useSQLiteContext();
 
@@ -48,33 +48,109 @@ const OtrasPreguntasScreen = ({ route, navigation }) => {
     const result = await otherQuestionsRepository.findAll();
     console.log("Formación", result);
   }
+  const getOtherQuestionsFields = () => ({
+    respondentId,
+    livedWithFirst7Years: primerosAños,
+    punishmentMethod: comoCastigaban,
+    rewardMethod: comoPremiaban,
+    childhoodAspiration: queriaSerGrande,
+    currentAspiration: quiereSerAhora,
+    relationshipWithFather: relacionPadre,
+    relationshipWithMother: relacionMadre,
+    relationshipWithSiblings: relacionHermanos,
+    hasStablePartner: parejaEstable,
+    timeWithPartner: tiempoPareja,
+    relationshipWithPartner: relacionPareja,
+    ageOfFirstSexualRelationship: primeraRelacionSexual,
+    currentSituation: esComoImaginaba,
+    affectionDemonstration: demuestraAfecto,
+    inLove: enamorado,
+    fears: teme,
+    biggestFear: sustoMasGrande,
+    greatestJoy: alegriaMasGrande,
+    responseToOffenseOrAttack: respuestaOfensa,
+  });
 
   const handleSubmit = async () => {
-    await otherQuestionsRepository.create({
-      respondentId,
-      livedWithFirst7Years: primerosAños,
-      punishmentMethod: comoCastigaban,
-      rewardMethod: comoPremiaban,
-      childhoodAspiration: queriaSerGrande,
-      currentAspiration: quiereSerAhora,
-      relationshipWithFather: relacionPadre,
-      relationshipWithMother: relacionMadre,
-      relationshipWithSiblings: relacionHermanos,
-      hasStablePartner: parejaEstable,
-      timeWithPartner: tiempoPareja,
-      relationshipWithPartner: relacionPareja,
-      ageOfFirstSexualRelationship: primeraRelacionSexual,
-      currentSituation: esComoImaginaba,
-      affectionDemonstration: demuestraAfecto,
-      inLove: enamorado,
-      fears: teme,
-      biggestFear: sustoMasGrande,
-      greatestJoy: alegriaMasGrande,
-      responseToOffenseOrAttack: respuestaOfensa,
-    });
+    const otherQuestion = await otherQuestionsRepository.findByRespondentId(
+      respondentId
+    );
+    if (otherQuestion) {
+      // Actualizar los datos de la otras preguntas
+      await otherQuestionsRepository.update({
+        ...getOtherQuestionsFields(),
+        id: otherQuestion.id,
+      });
+      if (!otherQuestion) {
+        console.error("No se pudo actualizar la otherQuestion.");
+        return;
+      }
+      console.log("otherQuestion actualizado correctamente.");
+      navigation.navigate("Inicio");
+    } else {
+      await otherQuestionsRepository.create(getOtherQuestionsFields());
+    }
+
+    // await otherQuestionsRepository.create({
+    //   respondentId,
+    //   livedWithFirst7Years: primerosAños,
+    //   punishmentMethod: comoCastigaban,
+    //   rewardMethod: comoPremiaban,
+    //   childhoodAspiration: queriaSerGrande,
+    //   currentAspiration: quiereSerAhora,
+    //   relationshipWithFather: relacionPadre,
+    //   relationshipWithMother: relacionMadre,
+    //   relationshipWithSiblings: relacionHermanos,
+    //   hasStablePartner: parejaEstable,
+    //   timeWithPartner: tiempoPareja,
+    //   relationshipWithPartner: relacionPareja,
+    //   ageOfFirstSexualRelationship: primeraRelacionSexual,
+    //   currentSituation: esComoImaginaba,
+    //   affectionDemonstration: demuestraAfecto,
+    //   inLove: enamorado,
+    //   fears: teme,
+    //   biggestFear: sustoMasGrande,
+    //   greatestJoy: alegriaMasGrande,
+    //   responseToOffenseOrAttack: respuestaOfensa,
+    // });
 
     navigation.navigate("Inicio");
   };
+
+  const setOtherQuestionsFields = async (otherQuestions) => {
+    setPrimerosAños(otherQuestions.livedWithFirst7Years);
+    setComoCastigaban(otherQuestions.punishmentMethod);
+    setComoPremiaban(otherQuestions.rewardMethod);
+    setQueriaSerGrande(otherQuestions.childhoodAspiration);
+    setQuiereSerAhora(otherQuestions.currentAspiration);
+    setRelacionPadre(otherQuestions.relationshipWithFather);
+    setRelacionMadre(otherQuestions.relationshipWithMother);
+    setRelacionHermanos(otherQuestions.relationshipWithSiblings);
+    setParejaEstable(otherQuestions.hasStablePartner);
+    setTiempoPareja(otherQuestions.timeWithPartner);
+    setRelacionPareja(otherQuestions.relationshipWithPartner);
+    setPrimeraRelacionSexual(otherQuestions.ageOfFirstSexualRelationship);
+    setEsComoImaginaba(otherQuestions.currentSituation);
+    setDemuestraAfecto(otherQuestions.affectionDemonstration);
+    setEnamorado(otherQuestions.inLove);
+    setTeme(otherQuestions.fears);
+    setSustoMasGrande(otherQuestions.biggestFear);
+    setAlegriaMasGrande(otherQuestions.greatestJoy);
+    setRespuestaOfensa(otherQuestions.responseToOffenseOrAttack);
+  };
+  const loadOtherQuestionsData = async (respondentId) => {
+    if (!respondentId) return;
+
+    const otherQuestions = await otherQuestionsRepository.findByRespondentId(
+      respondentId
+    );
+    if (otherQuestions) {
+      setOtherQuestionsFields(otherQuestions);
+    }
+  };
+  React.useEffect(() => {
+    loadOtherQuestionsData(respondentId);
+  }, [respondentId]);
 
   return (
     <ScrollView contentContainerStyle={styles.container}>

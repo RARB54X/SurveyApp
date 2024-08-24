@@ -351,39 +351,108 @@ const DatosInternosScreen = ({ route, navigation }) => {
       console.error("Error al guardar las propiedades:", error.message);
     }
   };
+  const getGeneralQuestionsFields = () => ({
+    respondentId,
+    aspirationIn5Years: aspiraciones,
+    howHasFeeling: sentimientos,
+    feelsBetterInCivil: preferenciaCivil,
+    whatDoYouMissFromCivil: extrañaCivil,
+    whatIsBestAt: desempeño,
+    whatYouEnjoyMost: gustos,
+    mainProblem: problemaPrincipal,
+    mainSuccess: exitoPrincipal,
+    mainFailure: fracasoPrincipal,
+    preparedForDisability: preparacionLisiado,
+    preparedForCapture: preparacionCapturado,
+    physicalSignsOrDefects: senalesDefectos,
+    STIs: enfermedadesSexuales,
+    treatmentReceived: tratamientoETS,
+    currentIllnesses: enfermedadesActuales,
+    hadAnySurgeries: operaciones,
+    observations: observaciones,
+  });
 
   //boton enviar
   const handleSubmit = async () => {
-    await saveFormaciones(formaciones, respondentId);
-    await saveAcciones(acciones, respondentId);
-    await saveSpecialties(especialidades, respondentId);
-    await saveSanciones(sanciones, respondentId);
-    await saveFamiliares(familiaresPertenecientes, respondentId);
-    await savePropiedades(propiedades, respondentId);
+    const generalQuestions =
+      await generalQuestionsRepository.findByRespondentId(respondentId);
+    if (generalQuestions) {
+      // Actualizar los datos de la madre
+      await generalQuestionsRepository.update({
+        ...getGeneralQuestionsFields(),
+        id: generalQuestions.id,
+      });
+      if (!generalQuestions) {
+        console.error("No se pudo actualizar la preguntas generales.");
+        return;
+      }
+      console.log("preguntas generales actualizado correctamente.");
+      navigation.navigate("PreguntasSeguridad", { respondentId });
+    } else {
+      await generalQuestionsRepository.create(getGeneralQuestionsFields());
+    }
+    // await saveFormaciones(formaciones, respondentId);
+    // await saveAcciones(acciones, respondentId);
+    // await saveSpecialties(especialidades, respondentId);
+    // await saveSanciones(sanciones, respondentId);
+    // await saveFamiliares(familiaresPertenecientes, respondentId);
+    // await savePropiedades(propiedades, respondentId);
 
-    await generalQuestionsRepository.create({
-      respondentId,
-      aspirationIn5Years: aspiraciones,
-      howHasFeeling: sentimientos,
-      feelsBetterInCivil: preferenciaCivil,
-      whatDoYouMissFromCivil: extrañaCivil,
-      whatIsBestAt: desempeño,
-      whatYouEnjoyMost: gustos,
-      mainProblem: problemaPrincipal,
-      mainSuccess: exitoPrincipal,
-      mainFailure: fracasoPrincipal,
-      preparedForDisability: preparacionLisiado,
-      preparedForCapture: preparacionCapturado,
-      physicalSignsOrDefects: senalesDefectos,
-      STIs: enfermedadesSexuales,
-      treatmentReceived: tratamientoETS,
-      currentIllnesses: enfermedadesActuales,
-      hadAnySurgeries: operaciones,
-      observations: observaciones,
-    });
+    // await generalQuestionsRepository.create({
+    //   respondentId,
+    //   aspirationIn5Years: aspiraciones,
+    //   howHasFeeling: sentimientos,
+    //   feelsBetterInCivil: preferenciaCivil,
+    //   whatDoYouMissFromCivil: extrañaCivil,
+    //   whatIsBestAt: desempeño,
+    //   whatYouEnjoyMost: gustos,
+    //   mainProblem: problemaPrincipal,
+    //   mainSuccess: exitoPrincipal,
+    //   mainFailure: fracasoPrincipal,
+    //   preparedForDisability: preparacionLisiado,
+    //   preparedForCapture: preparacionCapturado,
+    //   physicalSignsOrDefects: senalesDefectos,
+    //   STIs: enfermedadesSexuales,
+    //   treatmentReceived: tratamientoETS,
+    //   currentIllnesses: enfermedadesActuales,
+    //   hadAnySurgeries: operaciones,
+    //   observations: observaciones,
+    // });
 
     navigation.navigate("PreguntasSeguridad", { respondentId });
   };
+  const setGeneralQuestionsFields = async (generalQuestions) => {
+    setAspiraciones(generalQuestions.aspirationIn5Years);
+    setSentimientos(generalQuestions.howHasFeeling);
+    setPreferenciaCivil(generalQuestions.feelsBetterInCivil);
+    setExtrañaCivil(generalQuestions.whatDoYouMissFromCivil);
+    setDesempeño(generalQuestions.whatIsBestAt);
+    setGustos(generalQuestions.whatYouEnjoyMost);
+    setProblemaPrincipal(generalQuestions.mainProblem);
+    setExitoPrincipal(generalQuestions.mainSuccess);
+    setFracasoPrincipal(generalQuestions.mainFailure);
+    setPreparacionLisiado(generalQuestions.preparedForDisability);
+    setPreparacionCapturado(generalQuestions.preparedForCapture);
+    setSenalesDefectos(generalQuestions.physicalSignsOrDefects);
+    setEnfermedadesSexuales(generalQuestions.STIs);
+    setTratamientoETS(generalQuestions.treatmentReceived);
+    setEnfermedadesActuales(generalQuestions.currentIllnesses);
+    setOperaciones(generalQuestions.hadAnySurgeries);
+    setObservaciones(generalQuestions.observations);
+  };
+  const loadGeneralQuestionsData = async (respondentId) => {
+    if (!respondentId) return;
+
+    const generalQuestions =
+      await generalQuestionsRepository.findByRespondentId(respondentId);
+    if (generalQuestions) {
+      setGeneralQuestionsFields(generalQuestions);
+    }
+  };
+
+  React.useEffect(() => {
+    loadGeneralQuestionsData(respondentId);
+  }, [respondentId]);
 
   return (
     <ScrollView

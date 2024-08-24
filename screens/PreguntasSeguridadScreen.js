@@ -12,7 +12,7 @@ import { useSQLiteContext } from "expo-sqlite/next";
 import { SecurityQuestionsRepository } from "../repositories/SecurityQuestionsRepository";
 
 const PreguntasSeguridadScreen = ({ route, navigation }) => {
-  const { respondentId } = route.params;
+  const respondentId = route.params?.respondentId;
   console.log("respondentId", respondentId);
   const db = useSQLiteContext();
   React.useEffect(() => {
@@ -112,32 +112,101 @@ const PreguntasSeguridadScreen = ({ route, navigation }) => {
       );
     }
   };
+  const getSecurityQuestionsFields = () => ({
+    respondentId,
+    reasonForCapture: razonCaptura,
+    capturedBy: quienCaptura,
+    captureDate: cuandoCaptura,
+    captureLocation: dondeCaptura,
+    prisonName: carcel,
+    prisonDuration: tiempoCaptura,
+    releaseMethod: comoSalio,
+
+    militaryServiceStart: cuandoServicio,
+    militaryServiceLocation: dondeServicio,
+    militaryServiceEnd: comoSalioServicio,
+
+    otherOrganization: cuálOrganización,
+    otherOrganizationDuration: cuantoTiempoOrganización,
+    reasonForLeavingOrganization: motivoRetiroOrganización,
+    hasMilitaryFriends: amigosFuerzasMilitares,
+  });
 
   const handleSubmit = async () => {
     await saveMilitaryFamilyMembers(familiaresFuerzas, respondentId);
 
-    await securityQuestionsRepository.create({
-      respondentId,
-      reasonForCapture: razonCaptura,
-      capturedBy: quienCaptura,
-      captureDate: cuandoCaptura,
-      captureLocation: dondeCaptura,
-      prisonName: carcel,
-      prisonDuration: tiempoCaptura,
-      releaseMethod: comoSalio,
+    // await securityQuestionsRepository.create({
+    //   respondentId,
+    //   reasonForCapture: razonCaptura,
+    //   capturedBy: quienCaptura,
+    //   captureDate: cuandoCaptura,
+    //   captureLocation: dondeCaptura,
+    //   prisonName: carcel,
+    //   prisonDuration: tiempoCaptura,
+    //   releaseMethod: comoSalio,
 
-      militaryServiceStart: cuandoServicio,
-      militaryServiceLocation: dondeServicio,
-      militaryServiceEnd: comoSalioServicio,
+    //   militaryServiceStart: cuandoServicio,
+    //   militaryServiceLocation: dondeServicio,
+    //   militaryServiceEnd: comoSalioServicio,
 
-      otherOrganization: cuálOrganización,
-      otherOrganizationDuration: cuantoTiempoOrganización,
-      reasonForLeavingOrganization: motivoRetiroOrganización,
-      hasMilitaryFriends: amigosFuerzasMilitares,
-    });
+    //   otherOrganization: cuálOrganización,
+    //   otherOrganizationDuration: cuantoTiempoOrganización,
+    //   reasonForLeavingOrganization: motivoRetiroOrganización,
+    //   hasMilitaryFriends: amigosFuerzasMilitares,
+    // });
+    const securityQuestion =
+      await securityQuestionsRepository.findByRespondentId(respondentId);
+    if (securityQuestion) {
+      // Actualizar los datos de la madre
+      await securityQuestionsRepository.update({
+        ...getSecurityQuestionsFields(),
+        id: securityQuestion.id,
+      });
+      if (!securityQuestion) {
+        console.error("No se pudo actualizar la securityQuestion.");
+        return;
+      }
+      console.log("securityQuestion actualizado correctamente.");
+      navigation.navigate("OtrasPreguntas", { respondentId });
+    } else {
+      await securityQuestionsRepository.create(getSecurityQuestionsFields());
+    }
 
     navigation.navigate("OtrasPreguntas", { respondentId });
   };
+
+  const setSecurityQuestionsFields = async (securityQuestions) => {
+    setRazonCaptura(securityQuestions.reasonForCapture);
+    setQuienCaptura(securityQuestions.capturedBy);
+    setCuandoCaptura(securityQuestions.captureDate);
+    setDondeCaptura(securityQuestions.captureLocation);
+    setCarcel(securityQuestions.prisonName);
+    setTiempoCaptura(securityQuestions.prisonDuration);
+    setComoSalio(securityQuestions.releaseMethod);
+
+    // Configurar campos de "Servicio militar"
+    setCuandoServicio(securityQuestions.militaryServiceStart);
+    setDondeServicio(securityQuestions.militaryServiceLocation);
+    setComoSalioServicio(securityQuestions.militaryServiceEnd);
+
+    // Configurar campos de "Otras organizaciones"
+    setCuálOrganización(securityQuestions.otherOrganization);
+    setCuantoTiempoOrganización(securityQuestions.otherOrganizationDuration);
+    setMotivoRetiroOrganización(securityQuestions.reasonForLeavingOrganization);
+    setAmigosFuerzasMilitares(securityQuestions.hasMilitaryFriends);
+  };
+  const loadSecurityQuestionsData = async (respondentId) => {
+    if (!respondentId) return;
+
+    const securityQuestions =
+      await securityQuestionsRepository.findByRespondentId(respondentId);
+    if (securityQuestions) {
+      setSecurityQuestionsFields(securityQuestions);
+    }
+  };
+  React.useEffect(() => {
+    loadSecurityQuestionsData(respondentId);
+  }, [respondentId]);
 
   return (
     <ScrollView contentContainerStyle={styles.container}>

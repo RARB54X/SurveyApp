@@ -1,10 +1,12 @@
+import { GeneralQuestionsModel } from "../models/GeneralQuestionsModel";
+import { useSQLiteContext } from "expo-sqlite/next";
+
 export class GeneralQuestionsRepository {
   db;
 
-  constructor(db) {
+  constructor(db = useSQLiteContext()) {
     this.db = db;
   }
-
   async create(generalQuestions) {
     try {
       const lastInsertRowId = await new Promise((resolve, reject) => {
@@ -53,6 +55,60 @@ export class GeneralQuestionsRepository {
       return lastInsertRowId;
     } catch (error) {
       console.error("Error al insertar generalQuestions:", error.message);
+    }
+  }
+  async update(generalQuestions) {
+    try {
+      const response = await this.db.runAsync(
+        `UPDATE general_questions SET 
+                  aspiration_in_5_years = ?, how_has_feeling = ?, feels_better_in_civil = ?, 
+                  what_do_you_miss_from_civil = ?, what_is_best_at = ?, what_you_enjoy_most = ?, 
+                  main_problem = ?, main_success = ?, main_failure = ?, prepared_for_disability = ?, 
+                  prepared_for_capture = ?, physical_signs_or_defects = ?, STIs = ?, treatment_received = ?, 
+                  current_illnesses = ?, had_any_surgeries = ?, observations = ?
+              WHERE id = ?;`,
+        [
+          generalQuestions.aspirationIn5Years,
+          generalQuestions.howHasFeeling,
+          generalQuestions.feelsBetterInCivil,
+          generalQuestions.whatDoYouMissFromCivil,
+          generalQuestions.whatIsBestAt,
+          generalQuestions.whatYouEnjoyMost,
+          generalQuestions.mainProblem,
+          generalQuestions.mainSuccess,
+          generalQuestions.mainFailure,
+          generalQuestions.preparedForDisability,
+          generalQuestions.preparedForCapture,
+          generalQuestions.physicalSignsOrDefects,
+          generalQuestions.STIs,
+          generalQuestions.treatmentReceived,
+          generalQuestions.currentIllnesses,
+          generalQuestions.hadAnySurgeries,
+          generalQuestions.observations,
+          generalQuestions.id,
+        ]
+      );
+
+      console.log("Actualización completada exitosamente.");
+
+      return response.changes > 0;
+    } catch (error) {
+      console.error("Error al actualizar general_questions:", error.message);
+    }
+  }
+  async findByRespondentId(respondentId) {
+    try {
+      const result = await this.db.getFirstAsync(
+        `SELECT * FROM general_questions WHERE respondent_id = ?;`,
+        [respondentId]
+      );
+
+      return GeneralQuestionsModel.fromObject(result);
+    } catch (error) {
+      console.error(
+        "Error al obtener general_questions por ID de encuestado:",
+        error.message
+      );
     }
   }
 

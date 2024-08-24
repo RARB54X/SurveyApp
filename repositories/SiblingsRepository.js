@@ -1,5 +1,5 @@
-import { useSQLiteContext } from 'expo-sqlite/next';
-import { SiblingModel } from '../models/SiblingModel';
+import { useSQLiteContext } from "expo-sqlite/next";
+import { SiblingModel } from "../models/SiblingModel";
 export class SiblingsRepository {
   db;
 
@@ -12,7 +12,7 @@ export class SiblingsRepository {
       const lastInsertRowId = await new Promise((resolve, reject) => {
         this.db.withTransactionAsync(async () => {
           try {
-            console.log('Insertando hermano', sibling);
+            console.log("Insertando hermano", sibling);
 
             // Consulta SQL para insertar en siblings
             const response = await this.db.runAsync(
@@ -39,10 +39,38 @@ export class SiblingsRepository {
           }
         });
       });
-      console.log('Siblings id insertado:', lastInsertRowId);
+      console.log("Siblings id insertado:", lastInsertRowId);
       return lastInsertRowId;
     } catch (error) {
-      console.error('Error al insertar hermano:', error.message);
+      console.error("Error al insertar hermano:", error.message);
+    }
+  }
+
+  async update(sibling) {
+    try {
+      const response = await this.db.runAsync(
+        `UPDATE siblings SET 
+                name = ?, age = ?, occupation = ?, education_level = ?, residence_site = ?, 
+                current_address = ?, phone = ?, spouse = ?
+            WHERE id = ?;`,
+        [
+          sibling.name,
+          sibling.age,
+          sibling.occupation,
+          sibling.educationLevel,
+          sibling.residenceSite,
+          sibling.currentAddress,
+          sibling.phone,
+          sibling.spouse,
+          sibling.id,
+        ]
+      );
+
+      console.log("Actualización completada exitosamente.");
+
+      return response.changes > 0;
+    } catch (error) {
+      console.error("Error al actualizar siblings:", error.message);
     }
   }
 
@@ -50,7 +78,7 @@ export class SiblingsRepository {
     try {
       return await this.db.getAllAsync(`SELECT * FROM siblings`);
     } catch (error) {
-      console.error('Error al obtener hermanos:', error.message);
+      console.error("Error al obtener hermanos:", error.message);
     }
   }
 
@@ -66,7 +94,7 @@ export class SiblingsRepository {
       return result.map(SiblingModel.fromObject);
     } catch (error) {
       console.error(
-        'Error al obtener hermanos por ID de encuestado:',
+        "Error al obtener hermanos por ID de encuestado:",
         error.message
       );
       return [];
@@ -84,7 +112,7 @@ export class SiblingsRepository {
       );
       return SiblingModel.fromObject(result);
     } catch (error) {
-      console.error('Error al obtener hermano por ID:', error.message);
+      console.error("Error al obtener hermano por ID:", error.message);
       return null;
     }
   }
@@ -93,7 +121,7 @@ export class SiblingsRepository {
     try {
       await this.db.runAsync(`DELETE FROM siblings WHERE id = ?;`, [id]);
     } catch (error) {
-      console.error('Error al eliminar hermano por ID:', error.message);
+      console.error("Error al eliminar hermano por ID:", error.message);
     }
   }
 }

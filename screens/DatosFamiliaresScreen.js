@@ -19,11 +19,11 @@ const DatosFamiliaresScreen = ({ route, navigation }) => {
   const respondentId = route.params?.respondentId;
   // console.log("respondentId", respondentId);
   const db = useSQLiteContext();
-  React.useEffect(() => {
-    db.withTransactionAsync(async () => {
-      await getData();
-    });
-  }, [db]);
+  // React.useEffect(() => {
+  //   db.withTransactionAsync(async () => {
+  //     await getData();
+  //   });
+  // }, [db]);
 
   //estado para la madre
   const [nombreMadre, setNombreMadre] = useState("");
@@ -102,6 +102,7 @@ const DatosFamiliaresScreen = ({ route, navigation }) => {
     setHijos([
       ...hijos,
       {
+        id: null,
         nombre: "",
         edad: "",
         ocupacion: "",
@@ -113,33 +114,21 @@ const DatosFamiliaresScreen = ({ route, navigation }) => {
       },
     ]);
   };
-  const eliminarHijo = (index) => {
-    const nuevosHijos = [...hijos];
-    nuevosHijos.splice(index, 1);
-    setHijos(nuevosHijos);
+  const eliminarHijo = async (index) => {
+    const hijo = hijos[index];
+    const child = await childrenRepository.findById(hijo.id);
+    if (child) {
+      await childrenRepository.delete(child.id);
+    }
+    setHijos(hijos.filter((_, i) => i !== index));
   };
 
-  const actualizarHijo = (index, campo, valor) => {
-    const nuevosHijos = [...hijos];
-    nuevosHijos[index][campo] = valor;
-    setHijos(nuevosHijos);
+  const actualizarHijo = (index, field, value) => {
+    const updatedHijos = [...hijos];
+    updatedHijos[index][field] = value;
+    setHijos(updatedHijos);
   };
-  async function getData() {
-    const result = await motherRepository.findAll();
-    console.log("madre", result);
-  }
-  async function getData() {
-    const result = await fatherRepository.findAll();
-    console.log("padres", result);
-  }
-  async function getData() {
-    const result = await spouseRepository.findAll();
-    console.log("pareja", result);
-  }
-  async function getData() {
-    const result = await childrenRepository.findAll();
-    console.log("Hijos", result);
-  }
+
   const saveHermanos = async (hermanos, respondentId) => {
     try {
       // Itera sobre el array de hermanos y guarda cada uno en la base de datos
@@ -148,7 +137,17 @@ const DatosFamiliaresScreen = ({ route, navigation }) => {
 
         if (hermanoEntity) {
           console.log("Actualizando hermano:", hermanoEntity);
-          // await siblingsRepository.update();
+          await siblingsRepository.update({
+            id: hermano.id,
+            name: hermano.nombre,
+            age: hermano.edad,
+            occupation: hermano.ocupacion,
+            educationLevel: hermano.nivelEstudio,
+            residenceSite: hermano.residencia,
+            currentAddress: hermano.direccionActual,
+            phone: hermano.telefono,
+            spouse: hermano.conyugue,
+          });
         } else {
           // create
           await siblingsRepository.create({
@@ -170,21 +169,38 @@ const DatosFamiliaresScreen = ({ route, navigation }) => {
     }
   };
 
-  const saveChildren = async (children, respondentId) => {
+  const saveChildren = async (hijos, respondentId) => {
     try {
       // Itera sobre el array de hijos y guarda cada uno en la base de datos
-      for (const child of children) {
-        await childrenRepository.create({
-          respondentId,
-          name: child.nombre,
-          age: child.edad,
-          occupation: child.ocupacion,
-          educationLevel: child.nivelEstudio,
-          residenceSite: child.residencia,
-          currentAddress: child.direccionActual,
-          phone: child.telefono,
-          // Aquí puedes agregar otros campos si los hay en el modelo de la base de datos
-        });
+      for (const hijo of hijos) {
+        const hijoEntity = await childrenRepository.findById(hijo.id);
+        if (hijoEntity) {
+          console.log("Actualizando hijo:", hijoEntity);
+          await childrenRepository.update({
+            id: hijo.id,
+            name: hijo.nombre,
+            age: hijo.edad,
+            occupation: hijo.ocupacion,
+            educationLevel: hijo.nivelEstudio,
+            residenceSite: hijo.residencia,
+            currentAddress: hijo.direccionActual,
+            phone: hijo.telefono,
+            spouse: hijo.conyugue,
+          });
+        } else {
+          // create
+          await childrenRepository.create({
+            respondentId,
+            name: hijo.nombre,
+            age: hijo.edad,
+            occupation: hijo.ocupacion,
+            educationLevel: hijo.nivelEstudio,
+            residenceSite: hijo.residencia,
+            currentAddress: hijo.direccionActual,
+            phone: hijo.telefono,
+            spouse: hijo.conyugue,
+          });
+        }
       }
       console.log("Todos los hijos han sido guardados exitosamente.");
     } catch (error) {
@@ -237,6 +253,12 @@ const DatosFamiliaresScreen = ({ route, navigation }) => {
         ...getMotherFields(),
         id: mother.id,
       });
+      if (!mother) {
+        console.error("No se pudo actualizar la madre.");
+        return;
+      }
+      console.log("madre actualizado correctamente.");
+      navigation.navigate("DatosInternos", { respondentId });
     } else {
       await motherRepository.create(getMotherFields());
     }
@@ -247,6 +269,12 @@ const DatosFamiliaresScreen = ({ route, navigation }) => {
         ...getFatherFields(),
         id: father.id,
       });
+      if (!father) {
+        console.error("No se pudo actualizar el padre.");
+        return;
+      }
+      console.log("padre actualizado correctamente.");
+      navigation.navigate("DatosInternos", { respondentId });
     } else {
       await fatherRepository.create(getFatherFields());
     }
@@ -257,6 +285,12 @@ const DatosFamiliaresScreen = ({ route, navigation }) => {
         ...getSpouseFields(),
         id: spouse.id,
       });
+      if (!spouse) {
+        console.error("No se pudo actualizar el padre.");
+        return;
+      }
+      console.log("spouse actualizado correctamente.");
+      navigation.navigate("DatosInternos", { respondentId });
     } else {
       await spouseRepository.create(getSpouseFields());
     }
@@ -311,6 +345,18 @@ const DatosFamiliaresScreen = ({ route, navigation }) => {
     conyugue: sibling.spouse,
   });
 
+  const setChildFields = (child) => ({
+    id: child.id,
+    nombre: child.name,
+    edad: child.age,
+    ocupacion: child.occupation,
+    nivelEstudio: child.educationLevel,
+    residencia: child.residenceSite,
+    direccionActual: child.currentAddress,
+    telefono: child.phone,
+    conyugue: child.spouse,
+  });
+
   const loadMotherData = async (respondentId) => {
     if (!respondentId) return;
 
@@ -348,11 +394,22 @@ const DatosFamiliaresScreen = ({ route, navigation }) => {
     setHermanos(siblings.map(setSiblingFields));
   };
 
+  const loadChildData = async (respondentId) => {
+    if (!respondentId) return;
+
+    const children = await childrenRepository.findByRespondentId(respondentId);
+    if (!children.length) {
+      return;
+    }
+    setHijos(children.map(setChildFields));
+  };
+
   React.useEffect(() => {
     loadMotherData(respondentId);
     loadFatherData(respondentId);
     loadSpouseData(respondentId);
     loadSiblingData(respondentId);
+    loadChildData(respondentId);
   }, [respondentId]);
 
   return (
