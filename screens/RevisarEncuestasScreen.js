@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, FlatList } from 'react-native';
-import revisarEncuestaStyles from '../styles/revisarEncuestaStyle';
-import { RevisarEncuestasRepository } from '../repositories/RevisarEncuestasRepository';
-import { useSQLiteContext } from 'expo-sqlite/next';
+import React, { useEffect, useState } from "react";
+import { View, Text, TouchableOpacity, FlatList, Alert } from "react-native";
+import revisarEncuestaStyles from "../styles/revisarEncuestaStyle";
+import { RevisarEncuestasRepository } from "../repositories/RevisarEncuestasRepository";
+import { useSQLiteContext } from "expo-sqlite/next";
 
 const RevisarEncuestasScreen = ({ navigation }) => {
   const db = useSQLiteContext();
@@ -15,7 +15,7 @@ const RevisarEncuestasScreen = ({ navigation }) => {
         const result = await repository.findAll();
         setData(result);
       } catch (error) {
-        console.error('Error al obtener los datos:', error.message);
+        console.error("Error al obtener los datos:", error.message);
       }
     };
 
@@ -23,18 +23,45 @@ const RevisarEncuestasScreen = ({ navigation }) => {
   }, []);
 
   const handleModify = (id) => {
-    navigation.navigate('NuevaEncuesta', { respondentId: id });
+    navigation.navigate("NuevaEncuesta", { respondentId: id });
     // Lógica para modificar el encuestado con el ID correspondiente
-    console.log('Modificar encuestado con ID:', id);
+    console.log("Modificar encuestado con ID:", id);
   };
 
-  const handleDelete = (id) => {
-    // Lógica para borrar el encuestado con el ID correspondiente
-    console.log('Borrar encuestado con ID:', id);
+  const handleDelete = (id, nombre) => {
+    // Muestra una alerta para confirmar la eliminación
+    Alert.alert(
+      "Confirmar Eliminación",
+      `¿Estás seguro de que deseas eliminar al encuestado ${nombre}?`,
+      [
+        {
+          text: "Cancelar",
+          onPress: () => console.log("Eliminación cancelada"),
+          style: "cancel",
+        },
+        {
+          text: "Eliminar",
+          onPress: async () => {
+            try {
+              // Llama al método delete del repositorio para eliminar el encuestado
+              await repository.delete(id);
+
+              // Actualiza la lista de encuestados después de eliminar el encuestado de la base de datos
+              setData((prevData) => prevData.filter((item) => item.id !== id));
+
+              console.log("Encuestado eliminado con éxito:", id);
+            } catch (error) {
+              console.error("Error al eliminar el encuestado:", error);
+            }
+          },
+        },
+      ],
+      { cancelable: false } // Esto evita que se cierre el cuadro de diálogo al tocar fuera de él
+    );
   };
 
   const handleSubmit = () => {
-    navigation.navigate('Inicio');
+    navigation.navigate("Inicio");
   };
 
   const renderItem = ({ item }) => (
@@ -54,7 +81,7 @@ const RevisarEncuestasScreen = ({ navigation }) => {
         </TouchableOpacity>
         <TouchableOpacity
           style={revisarEncuestaStyles.deleteButton}
-          onPress={() => handleDelete(item.id)}
+          onPress={() => handleDelete(item.id, item.respondent_name)}
         >
           <Text style={revisarEncuestaStyles.buttonText}>Borrar</Text>
         </TouchableOpacity>

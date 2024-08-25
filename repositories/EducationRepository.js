@@ -1,7 +1,9 @@
+import { useSQLiteContext } from "expo-sqlite/next";
+import { EducationModel } from "../models/EducationModel";
 export class EducationRepository {
   db;
 
-  constructor(db) {
+  constructor(db = useSQLiteContext()) {
     this.db = db;
   }
 
@@ -39,11 +41,68 @@ export class EducationRepository {
     }
   }
 
-  async findAll() {
+  async update(education) {
     try {
-      return await this.db.getAllAsync(`SELECT * FROM education`);
+      const response = await this.db.runAsync(
+        `UPDATE education SET 
+                training_type = ?, training_duration = ?, year_of_completion = ?, structure = ?
+            WHERE id = ?;`,
+        [
+          education.trainingType,
+          education.trainingDuration,
+          education.yearOfCompletion,
+          education.structure,
+          education.id,
+        ]
+      );
+
+      console.log("Actualización de educación completada exitosamente.");
+
+      return response.changes > 0;
     } catch (error) {
-      console.error("Error al obtener educations:", error.message);
+      console.error("Error al actualizar education:", error.message);
+    }
+  }
+  async findByRespondentId(respondentId) {
+    try {
+      const result = await this.db.getAllAsync(
+        `SELECT * FROM education WHERE respondent_id = ?;`,
+        [respondentId]
+      );
+      if (!result?.length) {
+        return [];
+      }
+      return result.map(EducationModel.fromObject);
+    } catch (error) {
+      console.error(
+        "Error al obtener education por ID de encuestado:",
+        error.message
+      );
+      return [];
+    }
+  }
+
+  async findById(id) {
+    try {
+      if (!id) {
+        return null;
+      }
+      const result = await this.db.getFirstAsync(
+        `SELECT * FROM education WHERE id = ?;`,
+        [id]
+      );
+      return EducationModel.fromObject(result);
+    } catch (error) {
+      console.error("Error al obtener education por ID:", error.message);
+      return null;
+    }
+  }
+
+  async delete(id) {
+    try {
+      await this.db.runAsync(`DELETE FROM education WHERE id = ?;`, [id]);
+    } catch (error) {
+      console.error("Error al eliminar education por ID:", error.message);
     }
   }
 }

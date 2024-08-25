@@ -116,7 +116,6 @@ export class SiblingsRepository {
       return null;
     }
   }
-
   async delete(id) {
     try {
       await this.db.runAsync(`DELETE FROM siblings WHERE id = ?;`, [id]);

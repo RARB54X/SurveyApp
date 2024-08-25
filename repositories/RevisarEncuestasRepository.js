@@ -19,7 +19,7 @@ export class RevisarEncuestasRepository {
       return result;
     } catch (error) {
       console.error(
-        'Error al obtener respondents con entrevistadores:',
+        "Error al obtener respondents con entrevistadores:",
         error.message
       );
     }
@@ -33,7 +33,14 @@ export class RevisarEncuestasRepository {
       console.log(result); // Verifica el resultado
       return result;
     } catch (error) {
-      console.error('Error al obtener los entrevistadores:', error.message);
+      console.error("Error al obtener los entrevistadores:", error.message);
+    }
+  }
+  async delete(id) {
+    try {
+      await this.db.runAsync(`DELETE FROM respondents WHERE id = ?;`, [id]);
+    } catch (error) {
+      console.error("Error al eliminar respondents por ID:", error.message);
     }
   }
 }

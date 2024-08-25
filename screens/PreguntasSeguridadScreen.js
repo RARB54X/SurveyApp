@@ -13,13 +13,8 @@ import { SecurityQuestionsRepository } from "../repositories/SecurityQuestionsRe
 
 const PreguntasSeguridadScreen = ({ route, navigation }) => {
   const respondentId = route.params?.respondentId;
-  console.log("respondentId", respondentId);
+
   const db = useSQLiteContext();
-  React.useEffect(() => {
-    db.withTransactionAsync(async () => {
-      await getData();
-    });
-  }, [db]);
 
   const [razonCaptura, setRazonCaptura] = useState("");
   const [quienCaptura, setQuienCaptura] = useState("");
@@ -40,12 +35,18 @@ const PreguntasSeguridadScreen = ({ route, navigation }) => {
   const [motivoRetiroOrganización, setMotivoRetiroOrganización] = useState("");
   const [amigosFuerzasMilitares, setAmigosFuerzasMilitares] = useState("");
 
+  const militaryFamilyMembersRepository = new MilitaryFamilyMembersRepository(
+    db
+  );
+  const securityQuestionsRepository = new SecurityQuestionsRepository(db);
+
   const [familiaresFuerzas, setFamiliaresFuerzas] = useState([]);
 
   const agregarFamiliarFuerzas = () => {
     setFamiliaresFuerzas([
       ...familiaresFuerzas,
       {
+        id: null,
         tipoFamiliar: "",
         nombre: "",
         edad: "",
@@ -54,64 +55,74 @@ const PreguntasSeguridadScreen = ({ route, navigation }) => {
         rango: "",
         unidad: "",
         lugarServicio: "",
-        amigosFuerzas: "",
       },
     ]);
   };
 
-  const eliminarFamiliarFuerzas = (index) => {
-    const nuevosFamiliares = [...familiaresFuerzas];
-    nuevosFamiliares.splice(index, 1);
-    setFamiliaresFuerzas(nuevosFamiliares);
+  const eliminarFamiliarFuerzas = async (index) => {
+    const familiar = familiaresFuerzas[index];
+    const familiarFuerza = await militaryFamilyMembersRepository.findById(
+      familiar.id
+    );
+    if (familiarFuerza) {
+      await militaryFamilyMembersRepository.delete(familiarFuerza.id);
+    }
+    setFamiliaresFuerzas(familiaresFuerzas.filter((_, i) => i !== index));
   };
 
-  const actualizarFamiliarFuerzas = (index, campo, valor) => {
-    const nuevosFamiliares = [...familiaresFuerzas];
-    nuevosFamiliares[index][campo] = valor;
-    setFamiliaresFuerzas(nuevosFamiliares);
+  const actualizarFamiliarFuerzas = (index, field, value) => {
+    const updatedFamiliaresFuerzas = [...familiaresFuerzas];
+    updatedFamiliaresFuerzas[index][field] = value;
+    setFamiliaresFuerzas(updatedFamiliaresFuerzas);
   };
-
-  const militaryFamilyMembersRepository = new MilitaryFamilyMembersRepository(
-    db
-  );
-  const securityQuestionsRepository = new SecurityQuestionsRepository(db);
-
-  async function getData() {
-    const result = await militaryFamilyMembersRepository.findAll();
-    console.log("militar Familiar", result);
-  }
-
-  async function getData() {
-    const result = await militaryFamilyMembersRepository.findAll();
-    console.log("militar Familiar", result);
-  }
 
   const saveMilitaryFamilyMembers = async (familiaresFuerzas, respondentId) => {
     try {
-      // Itera sobre el array de familiares en fuerzas militares y guarda cada uno en la base de datos
+      // Itera sobre el array de familiares en las fuerzas y guarda cada uno en la base de datos
       for (const familiar of familiaresFuerzas) {
-        await militaryFamilyMembersRepository.create({
-          respondentId,
-          familyTypeInMilitary: familiar.tipoFamiliar,
-          familyNameInMilitary: familiar.nombre,
-          familyAgeInMilitary: familiar.edad,
-          familyProfessionInMilitary: familiar.profesion,
-          timeInMilitary: familiar.tiempo,
-          familyRank: familiar.rango,
-          familyUnit: familiar.unidad,
-          familyServiceLocation: familiar.lugarServicio,
-        });
+        const familiarEntity = await militaryFamilyMembersRepository.findById(
+          familiar.id
+        );
+
+        if (familiarEntity) {
+          console.log("Actualizando familiar en las fuerzas:", familiarEntity);
+          await militaryFamilyMembersRepository.update({
+            id: familiar.id,
+            familyTypeInMilitary: familiar.tipoFamiliar,
+            familyNameInMilitary: familiar.nombre,
+            familyAgeInMilitary: familiar.edad,
+            familyProfessionInMilitary: familiar.profesion,
+            timeInMilitary: familiar.tiempo,
+            familyRank: familiar.rango,
+            familyUnit: familiar.unidad,
+            familyServiceLocation: familiar.lugarServicio,
+          });
+        } else {
+          // create
+          await militaryFamilyMembersRepository.create({
+            respondentId,
+            familyTypeInMilitary: familiar.tipoFamiliar,
+            familyNameInMilitary: familiar.nombre,
+            familyAgeInMilitary: familiar.edad,
+            familyProfessionInMilitary: familiar.profesion,
+            timeInMilitary: familiar.tiempo,
+            familyRank: familiar.rango,
+            familyUnit: familiar.unidad,
+            familyServiceLocation: familiar.lugarServicio,
+          });
+        }
       }
       console.log(
-        "Todos los familiares militares han sido guardados exitosamente."
+        "Todos los familiares en las fuerzas han sido guardados exitosamente."
       );
     } catch (error) {
       console.error(
-        "Error al guardar los familiares militares:",
+        "Error al guardar los familiares en las fuerzas:",
         error.message
       );
     }
   };
+
   const getSecurityQuestionsFields = () => ({
     respondentId,
     reasonForCapture: razonCaptura,
@@ -174,6 +185,17 @@ const PreguntasSeguridadScreen = ({ route, navigation }) => {
 
     navigation.navigate("OtrasPreguntas", { respondentId });
   };
+  const setMilitaryFamilyMemberFields = (militaryFamilyMember) => ({
+    id: militaryFamilyMember.id,
+    tipoFamiliar: militaryFamilyMember.familyTypeInMilitary,
+    nombre: militaryFamilyMember.familyNameInMilitary,
+    edad: militaryFamilyMember.familyAgeInMilitary,
+    profesion: militaryFamilyMember.familyProfessionInMilitary,
+    tiempo: militaryFamilyMember.timeInMilitary,
+    rango: militaryFamilyMember.familyRank,
+    unidad: militaryFamilyMember.familyUnit,
+    lugarServicio: militaryFamilyMember.familyServiceLocation,
+  });
 
   const setSecurityQuestionsFields = async (securityQuestions) => {
     setRazonCaptura(securityQuestions.reasonForCapture);
@@ -204,8 +226,22 @@ const PreguntasSeguridadScreen = ({ route, navigation }) => {
       setSecurityQuestionsFields(securityQuestions);
     }
   };
+  const loadMilitaryFamilyMemberData = async (respondentId) => {
+    if (!respondentId) return;
+
+    const militaryFamilyMembers =
+      await militaryFamilyMembersRepository.findByRespondentId(respondentId);
+    if (!militaryFamilyMembers.length) {
+      return;
+    }
+    setFamiliaresFuerzas(
+      militaryFamilyMembers.map(setMilitaryFamilyMemberFields)
+    );
+  };
+
   React.useEffect(() => {
     loadSecurityQuestionsData(respondentId);
+    loadMilitaryFamilyMemberData(respondentId);
   }, [respondentId]);
 
   return (

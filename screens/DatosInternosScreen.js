@@ -17,178 +17,9 @@ import { PropertiesRepository } from "../repositories/PropertiesRepository";
 import { useSQLiteContext } from "expo-sqlite/next";
 
 const DatosInternosScreen = ({ route, navigation }) => {
-  const { respondentId } = route.params;
-  console.log("respondentId", respondentId);
+  const respondentId = route.params?.respondentId;
+
   const db = useSQLiteContext();
-
-  React.useEffect(() => {
-    db.withTransactionAsync(async () => {
-      await getData();
-    });
-  }, [db]);
-
-  const [formaciones, setFormaciones] = useState([]);
-
-  const agregarFormacion = () => {
-    setFormaciones([
-      ...formaciones,
-      {
-        tipoFormacion: "",
-        tiempoFormacion: "",
-        anoRealizacion: "",
-        estructura: "",
-      },
-    ]);
-  };
-
-  const eliminarFormacion = (index) => {
-    const nuevasFormaciones = [...formaciones];
-    nuevasFormaciones.splice(index, 1);
-    setFormaciones(nuevasFormaciones);
-  };
-
-  const actualizarFormacion = (index, campo, valor) => {
-    const nuevasFormaciones = [...formaciones];
-    nuevasFormaciones[index][campo] = valor;
-    setFormaciones(nuevasFormaciones);
-  };
-
-  const [acciones, setAcciones] = useState([]);
-
-  const agregarAccion = () => {
-    setAcciones([
-      ...acciones,
-      {
-        tipoAccion: "",
-        mandoEncargado: "",
-        anoRealizacion: "",
-        estructura: "",
-      },
-    ]);
-  };
-
-  const eliminarAccion = (index) => {
-    const nuevasAcciones = [...acciones];
-    nuevasAcciones.splice(index, 1);
-    setAcciones(nuevasAcciones);
-  };
-
-  const actualizarAccion = (index, campo, valor) => {
-    const nuevasAcciones = [...acciones];
-    nuevasAcciones[index][campo] = valor;
-    setAcciones(nuevasAcciones);
-  };
-
-  // Estado para manejar las especialidades
-  const [especialidades, setEspecialidades] = useState([]);
-
-  // Función para agregar una especialidad
-  const agregarEspecialidad = () => {
-    setEspecialidades([
-      ...especialidades,
-      { tipoEspecialidad: "", tiempoDesempenado: "", estructura: "" },
-    ]);
-  };
-
-  // Función para eliminar una especialidad
-  const eliminarEspecialidad = (index) => {
-    const nuevasEspecialidades = [...especialidades];
-    nuevasEspecialidades.splice(index, 1);
-    setEspecialidades(nuevasEspecialidades);
-  };
-
-  // Función para actualizar una especialidad
-  const actualizarEspecialidad = (index, campo, valor) => {
-    const nuevasEspecialidades = [...especialidades];
-    nuevasEspecialidades[index][campo] = valor;
-    setEspecialidades(nuevasEspecialidades);
-  };
-
-  // Estado para manejar las sanciones
-  const [sanciones, setSanciones] = useState([]);
-
-  // Función para agregar una sanción
-  const agregarSancion = () => {
-    setSanciones([
-      ...sanciones,
-      {
-        razon: "",
-        quienSanciono: "",
-        tipo: "",
-        cuando: "",
-        tiempo: "",
-        estructura: "",
-      },
-    ]);
-  };
-
-  // Función para eliminar una sanción
-  const eliminarSancion = (index) => {
-    const nuevasSanciones = [...sanciones];
-    nuevasSanciones.splice(index, 1);
-    setSanciones(nuevasSanciones);
-  };
-
-  // Función para actualizar una sanción
-  const actualizarSancion = (index, campo, valor) => {
-    const nuevasSanciones = [...sanciones];
-    nuevasSanciones[index][campo] = valor;
-    setSanciones(nuevasSanciones);
-  };
-
-  const [familiaresPertenecientes, setFamiliaresPertenecientes] = useState([]);
-
-  // Función para agregar un familiar
-  const agregarFamiliar = () => {
-    setFamiliaresPertenecientes([
-      ...familiaresPertenecientes,
-      {
-        tipo: "",
-        nombre: "",
-        edad: "",
-        rango: "",
-        estructura: "",
-        tiempo: "",
-        estado: "",
-      },
-    ]);
-  };
-
-  // Función para eliminar un familiar
-  const eliminarFamiliar = (index) => {
-    const nuevosFamiliares = [...familiaresPertenecientes];
-    nuevosFamiliares.splice(index, 1);
-    setFamiliaresPertenecientes(nuevosFamiliares);
-  };
-
-  // Función para actualizar un familiar
-  const actualizarFamiliar = (index, campo, valor) => {
-    const nuevosFamiliares = [...familiaresPertenecientes];
-    nuevosFamiliares[index][campo] = valor;
-    setFamiliaresPertenecientes(nuevosFamiliares);
-  };
-
-  // Estado para manejar las propiedades
-  const [propiedades, setPropiedades] = useState([]);
-
-  // Función para agregar una propiedad
-  const agregarPropiedad = () => {
-    setPropiedades([...propiedades, { ubicacion: "" }]);
-  };
-
-  // Función para eliminar una propiedad
-  const eliminarPropiedad = (index) => {
-    const nuevasPropiedades = [...propiedades];
-    nuevasPropiedades.splice(index, 1);
-    setPropiedades(nuevasPropiedades);
-  };
-
-  // Función para actualizar una propiedad
-  const actualizarPropiedad = (index, campo, valor) => {
-    const nuevasPropiedades = [...propiedades];
-    nuevasPropiedades[index][campo] = valor;
-    setPropiedades(nuevasPropiedades);
-  };
 
   // Estado para manejar las respuestas de preguntas generales
   const [aspiraciones, setAspiraciones] = useState("");
@@ -217,44 +48,223 @@ const DatosInternosScreen = ({ route, navigation }) => {
   const propertiesRepository = new PropertiesRepository(db);
   const generalQuestionsRepository = new GeneralQuestionsRepository(db);
   const specialtiesRepository = new SpecialtiesRepository(db);
-  // const securityQuestionsRepository = new SecurityQuestionsRepository(db);
+  const [formaciones, setFormaciones] = useState([]);
+  // Estado para manejar las propiedades
+  const [propiedades, setPropiedades] = useState([]);
 
-  async function getData() {
-    const result = await educationRepository.findAll();
-    console.log("Formación", result);
-  }
-  async function getData() {
-    const result = await actionRepository.findAll();
-    console.log("Acciones", result);
-  }
-  async function getData() {
-    const result = await sanctionsRepository.findAll();
-    console.log("Sanciones", result);
-  }
-  async function getData() {
-    const result = await nonMilitaryFamilyMembersRepository.findAll();
-    console.log("familiares en la guerrilla", result);
-  }
-  async function getData() {
-    const result = await propertiesRepository.findAll();
-    console.log("Propiedades", result);
-  }
-  async function getData() {
-    const result = await generalQuestionsRepository.findAll();
-    console.log("Preguntas generales", result);
-  }
+  const agregarFormacion = () => {
+    setFormaciones([
+      ...formaciones,
+      {
+        id: null,
+        tipoFormacion: "",
+        tiempoFormacion: "",
+        anoRealizacion: "",
+        estructura: "",
+      },
+    ]);
+  };
+
+  const eliminarFormacion = async (index) => {
+    const formacion = formaciones[index];
+    const education = await educationRepository.findById(formacion.id);
+    if (formacion) {
+      await educationRepository.delete(education.id);
+    }
+    setFormaciones(formaciones.filter((_, i) => i !== index));
+  };
+
+  const actualizarFormacion = (index, field, value) => {
+    const updateFormaciones = [...formaciones];
+    updateFormaciones[index][field] = value;
+    setFormaciones(updateFormaciones);
+  };
+
+  const [acciones, setAcciones] = useState([]);
+
+  const agregarAccion = () => {
+    setAcciones([
+      ...acciones,
+      {
+        id: null,
+        tipoAccion: "",
+        mandoEncargado: "",
+        anoRealizacion: "",
+        estructura: "",
+      },
+    ]);
+  };
+
+  const eliminarAccion = async (index) => {
+    const accion = acciones[index];
+    const action = await actionRepository.findById(accion.id);
+    if (action) {
+      await actionRepository.delete(action.id);
+    }
+    setAcciones(acciones.filter((_, i) => i !== index));
+  };
+
+  const actualizarAccion = (index, field, value) => {
+    const updateAcciones = [...acciones];
+    updateAcciones[index][field] = value;
+    setAcciones(updateAcciones);
+  };
+
+  // Estado para manejar las especialidades
+  const [especialidades, setEspecialidades] = useState([]);
+
+  // Función para agregar una especialidad
+  const agregarEspecialidad = () => {
+    setEspecialidades([
+      ...especialidades,
+      { id: null, tipoEspecialidad: "", tiempoDesempenado: "", estructura: "" },
+    ]);
+  };
+
+  // Función para eliminar una especialidad
+  const eliminarEspecialidad = async (index) => {
+    const especialidad = especialidades[index];
+    const specialty = await specialtiesRepository.findById(especialidad.id);
+    if (specialty) {
+      await specialtiesRepository.delete(specialty.id);
+    }
+    setEspecialidades(especialidades.filter((_, i) => i !== index));
+  };
+
+  // Función para actualizar una especialidad
+  const actualizarEspecialidad = (index, field, value) => {
+    const updateEspecialidades = [...especialidades];
+    updateEspecialidades[index][field] = value;
+    setEspecialidades(updateEspecialidades);
+  };
+
+  // Estado para manejar las sanciones
+  const [sanciones, setSanciones] = useState([]);
+
+  // Función para agregar una sanción
+  const agregarSancion = () => {
+    setSanciones([
+      ...sanciones,
+      {
+        id: null,
+        razon: "",
+        quienSanciono: "",
+        tipo: "",
+        cuando: "",
+        tiempo: "",
+        estructura: "",
+      },
+    ]);
+  };
+
+  // Función para eliminar una sanción
+  const eliminarSancion = async (index) => {
+    const sancion = sanciones[index]; // Asume que 'sanciones' es tu array de sanciones
+    const sanction = await sanctionsRepository.findById(sancion.id);
+    if (sanction) {
+      await sanctionsRepository.delete(sanction.id);
+    }
+    setSanciones(sanciones.filter((_, i) => i !== index));
+  };
+
+  // Función para actualizar una sanción
+  const actualizarSancion = (index, field, value) => {
+    const updatedSanciones = [...sanciones]; // Copia el array de sanciones
+    updatedSanciones[index][field] = value; // Actualiza el campo especificado con el nuevo valor
+    setSanciones(updatedSanciones); // Actualiza el estado con las sanciones modificadas
+  };
+
+  const [familiaresPertenecientes, setFamiliaresPertenecientes] = useState([]);
+
+  // Función para agregar un familiar
+  const agregarFamiliar = () => {
+    setFamiliaresPertenecientes([
+      ...familiaresPertenecientes,
+      {
+        id: null,
+        tipo: "",
+        nombre: "",
+        edad: "",
+        rango: "",
+        estructura: "",
+        tiempo: "",
+        estado: "",
+      },
+    ]);
+  };
+
+  // Función para eliminar un familiar
+  const eliminarFamiliarPerteneciente = async (index) => {
+    const familiar = familiaresPertenecientes[index];
+    const familiarPerteneciente =
+      await nonMilitaryFamilyMembersRepository.findById(familiar.id);
+    if (familiarPerteneciente) {
+      await nonMilitaryFamilyMembersRepository.delete(familiarPerteneciente.id);
+    }
+    setFamiliaresPertenecientes(
+      familiaresPertenecientes.filter((_, i) => i !== index)
+    );
+  };
+
+  // Función para actualizar un familiar
+  const actualizarFamiliarPerteneciente = (index, field, value) => {
+    const updatedFamiliaresPertenecientes = [...familiaresPertenecientes];
+    updatedFamiliaresPertenecientes[index][field] = value;
+    setFamiliaresPertenecientes(updatedFamiliaresPertenecientes);
+  };
+
+  // Función para agregar una propiedad
+  const agregarPropiedad = () => {
+    setPropiedades([...propiedades, { id: null, ubicacion: "" }]);
+  };
+
+  // Función para eliminar una propiedad
+  const eliminarPropiedad = async (index) => {
+    const propiedad = propiedades[index];
+    const propiedadExistente = await propertiesRepository.findById(
+      propiedad.id
+    );
+    if (propiedadExistente) {
+      await propertiesRepository.delete(propiedadExistente.id);
+    }
+    setPropiedades(propiedades.filter((_, i) => i !== index));
+  };
+
+  // Función para actualizar una propiedad
+  const actualizarPropiedad = (index, field, value) => {
+    const updatedPropiedades = [...propiedades];
+    updatedPropiedades[index][field] = value;
+    setPropiedades(updatedPropiedades);
+  };
+
+  // const securityQuestionsRepository = new SecurityQuestionsRepository(db);
 
   const saveFormaciones = async (formaciones, respondentId) => {
     try {
-      // Itera sobre el array de formaciones y guarda cada una en la base de datos
       for (const formacion of formaciones) {
-        await educationRepository.create({
-          respondentId,
-          trainingType: formacion.tipoFormacion,
-          trainingDuration: formacion.tiempoFormacion,
-          yearOfCompletion: formacion.anoRealizacion,
-          structure: formacion.estructura,
-        });
+        const formacionEntity = await educationRepository.findById(
+          formacion.id
+        );
+
+        if (formacionEntity) {
+          console.log("Actualizando educacion:", formacionEntity);
+          await educationRepository.update({
+            id: formacion.id,
+            trainingType: formacion.tipoFormacion,
+            trainingDuration: formacion.tiempoFormacion,
+            yearOfCompletion: formacion.anoRealizacion,
+            structure: formacion.estructura,
+          });
+        } else {
+          // create
+          await educationRepository.create({
+            respondentId,
+            trainingType: formacion.tipoFormacion,
+            trainingDuration: formacion.tiempoFormacion,
+            yearOfCompletion: formacion.anoRealizacion,
+            structure: formacion.estructura,
+          });
+        }
       }
       console.log("Todas las formaciones han sido guardadas exitosamente.");
     } catch (error) {
@@ -264,51 +274,94 @@ const DatosInternosScreen = ({ route, navigation }) => {
 
   const saveAcciones = async (acciones, respondentId) => {
     try {
-      // Itera sobre el array de acciones y guarda cada una en la base de datos
+      // Itera sobre el array de hermanos y guarda cada uno en la base de datos
       for (const accion of acciones) {
-        await actionRepository.create({
-          respondentId,
-          actionType: accion.tipoAccion,
-          supervisorInCharge: accion.mandoEncargado,
-          yearOfCompletion: accion.anoRealizacion,
-          structure: accion.estructura,
-        });
+        const accionEntity = await actionRepository.findById(accion.id);
+
+        if (accionEntity) {
+          console.log("Actualizando accion:", accionEntity);
+          await actionRepository.update({
+            id: accion.id,
+            actionType: accion.tipoAccion,
+            commandingOfficer: accion.mandoEncargado,
+            yearOfCompletion: accion.anoRealizacion,
+            structure: accion.estructura,
+          });
+        } else {
+          // create
+          await actionRepository.create({
+            respondentId,
+            actionType: accion.tipoAccion,
+            commandingOfficer: accion.mandoEncargado,
+            yearOfCompletion: accion.anoRealizacion,
+            structure: accion.estructura,
+          });
+        }
       }
-      console.log("Todas las acciones han sido guardadas exitosamente.");
+      console.log("Todos los accion han sido guardados exitosamente.");
     } catch (error) {
-      console.error("Error al guardar las acciones:", error.message);
+      console.error("Error al guardar los accion:", error.message);
     }
   };
 
   const saveSpecialties = async (especialidades, respondentId) => {
     try {
-      // Itera sobre el array de especialidades y guarda cada una en la base de datos
+      // Itera sobre el array de hermanos y guarda cada uno en la base de datos
       for (const especialidad of especialidades) {
-        await specialtiesRepository.create({
-          respondentId,
-          specialtyType: especialidad.tipoEspecialidad,
-          duration: especialidad.tiempoDesempenado,
-          structure: especialidad.estructura,
-        });
+        const especialdiadEntity = await specialtiesRepository.findById(
+          especialidad.id
+        );
+        if (especialdiadEntity) {
+          console.log("Actualizando especialidad:", especialdiadEntity);
+          await specialtiesRepository.update({
+            id: especialidad.id,
+            specialtyType: especialidad.tipoEspecialidad,
+            duration: especialidad.tiempoDesempenado,
+            structure: especialidad.estructura,
+          });
+        } else {
+          // create
+          await specialtiesRepository.create({
+            respondentId,
+            specialtyType: especialidad.tipoEspecialidad,
+            duration: especialidad.tiempoDesempenado,
+            structure: especialidad.estructura,
+          });
+        }
       }
-      console.log("Todas las especialidades han sido guardadas exitosamente.");
+      console.log("Todos los especialidad han sido guardados exitosamente.");
     } catch (error) {
-      console.error("Error al guardar las especialidades:", error.message);
+      console.error("Error al guardar los especialidad:", error.message);
     }
   };
   const saveSanciones = async (sanciones, respondentId) => {
     try {
       // Itera sobre el array de sanciones y guarda cada una en la base de datos
       for (const sancion of sanciones) {
-        await sanctionsRepository.create({
-          respondentId,
-          reason: sancion.razon,
-          sanctionedBy: sancion.quienSanciono,
-          sanctionType: sancion.tipo,
-          date: sancion.cuando,
-          sanctionDuration: sancion.tiempo,
-          structure: sancion.estructura,
-        });
+        const sancionEntity = await sanctionsRepository.findById(sancion.id);
+        if (sancionEntity) {
+          console.log("Actualizando sanción:", sancionEntity);
+          await sanctionsRepository.update({
+            id: sancion.id,
+            reason: sancion.razon,
+            sanctionedBy: sancion.quienSanciono,
+            sanctionType: sancion.tipo,
+            date: sancion.cuando,
+            sanctionDuration: sancion.tiempo,
+            structure: sancion.estructura,
+          });
+        } else {
+          // create
+          await sanctionsRepository.create({
+            respondentId,
+            reason: sancion.razon,
+            sanctionedBy: sancion.quienSanciono,
+            sanctionType: sancion.tipo,
+            date: sancion.cuando,
+            sanctionDuration: sancion.tiempo,
+            structure: sancion.estructura,
+          });
+        }
       }
       console.log("Todas las sanciones han sido guardadas exitosamente.");
     } catch (error) {
@@ -316,24 +369,50 @@ const DatosInternosScreen = ({ route, navigation }) => {
     }
   };
 
-  const saveFamiliares = async (familiaresPertenecientes, respondentId) => {
+  const saveFamiliaresPertenecientes = async (
+    familiaresPertenecientes,
+    respondentId
+  ) => {
     try {
-      // Itera sobre el array de familiares y guarda cada uno en la base de datos
+      // Itera sobre el array de familiares pertenecientes y guarda cada uno en la base de datos
       for (const familiar of familiaresPertenecientes) {
-        await nonMilitaryFamilyMembersRepository.create({
-          respondentId,
-          familyType: familiar.tipo,
-          name: familiar.nombre,
-          age: familiar.edad,
-          rank: familiar.rango,
-          structure: familiar.estructura,
-          duration: familiar.tiempo,
-          currentStatus: familiar.estado,
-        });
+        const familiarEntity =
+          await nonMilitaryFamilyMembersRepository.findById(familiar.id);
+
+        if (familiarEntity) {
+          console.log("Actualizando familiar perteneciente:", familiarEntity);
+          await nonMilitaryFamilyMembersRepository.update({
+            id: familiar.id,
+            familyType: familiar.tipo,
+            name: familiar.nombre,
+            age: familiar.edad,
+            rank: familiar.rango,
+            structure: familiar.estructura,
+            duration: familiar.tiempo,
+            currentStatus: familiar.estado,
+          });
+        } else {
+          // Crear
+          await nonMilitaryFamilyMembersRepository.create({
+            respondentId,
+            familyType: familiar.tipo,
+            name: familiar.nombre,
+            age: familiar.edad,
+            rank: familiar.rango,
+            structure: familiar.estructura,
+            duration: familiar.tiempo,
+            currentStatus: familiar.estado,
+          });
+        }
       }
-      console.log("Todos los familiares han sido guardados exitosamente.");
+      console.log(
+        "Todos los familiares pertenecientes han sido guardados exitosamente."
+      );
     } catch (error) {
-      console.error("Error al guardar los familiares:", error.message);
+      console.error(
+        "Error al guardar los familiares pertenecientes:",
+        error.message
+      );
     }
   };
 
@@ -341,16 +420,30 @@ const DatosInternosScreen = ({ route, navigation }) => {
     try {
       // Itera sobre el array de propiedades y guarda cada una en la base de datos
       for (const propiedad of propiedades) {
-        await propertiesRepository.create({
-          respondentId,
-          location: propiedad.ubicacion,
-        });
+        const propiedadEntity = await propertiesRepository.findById(
+          propiedad.id
+        );
+
+        if (propiedadEntity) {
+          console.log("Actualizando propiedad:", propiedadEntity);
+          await propertiesRepository.update({
+            id: propiedad.id,
+            location: propiedad.ubicacion,
+          });
+        } else {
+          // create
+          await propertiesRepository.create({
+            respondentId,
+            location: propiedad.ubicacion,
+          });
+        }
       }
       console.log("Todas las propiedades han sido guardadas exitosamente.");
     } catch (error) {
       console.error("Error al guardar las propiedades:", error.message);
     }
   };
+
   const getGeneralQuestionsFields = () => ({
     respondentId,
     aspirationIn5Years: aspiraciones,
@@ -387,40 +480,64 @@ const DatosInternosScreen = ({ route, navigation }) => {
         return;
       }
       console.log("preguntas generales actualizado correctamente.");
-      navigation.navigate("PreguntasSeguridad", { respondentId });
+      // navigation.navigate("PreguntasSeguridad", { respondentId });
     } else {
       await generalQuestionsRepository.create(getGeneralQuestionsFields());
     }
-    // await saveFormaciones(formaciones, respondentId);
-    // await saveAcciones(acciones, respondentId);
-    // await saveSpecialties(especialidades, respondentId);
-    // await saveSanciones(sanciones, respondentId);
-    // await saveFamiliares(familiaresPertenecientes, respondentId);
-    // await savePropiedades(propiedades, respondentId);
-
-    // await generalQuestionsRepository.create({
-    //   respondentId,
-    //   aspirationIn5Years: aspiraciones,
-    //   howHasFeeling: sentimientos,
-    //   feelsBetterInCivil: preferenciaCivil,
-    //   whatDoYouMissFromCivil: extrañaCivil,
-    //   whatIsBestAt: desempeño,
-    //   whatYouEnjoyMost: gustos,
-    //   mainProblem: problemaPrincipal,
-    //   mainSuccess: exitoPrincipal,
-    //   mainFailure: fracasoPrincipal,
-    //   preparedForDisability: preparacionLisiado,
-    //   preparedForCapture: preparacionCapturado,
-    //   physicalSignsOrDefects: senalesDefectos,
-    //   STIs: enfermedadesSexuales,
-    //   treatmentReceived: tratamientoETS,
-    //   currentIllnesses: enfermedadesActuales,
-    //   hadAnySurgeries: operaciones,
-    //   observations: observaciones,
-    // });
+    await saveFormaciones(formaciones, respondentId);
+    await saveAcciones(acciones, respondentId);
+    await saveSpecialties(especialidades, respondentId);
+    await saveSanciones(sanciones, respondentId);
+    await saveFamiliaresPertenecientes(familiaresPertenecientes, respondentId);
+    await savePropiedades(propiedades, respondentId);
 
     navigation.navigate("PreguntasSeguridad", { respondentId });
   };
+  const setEducationFields = (education) => ({
+    id: education.id,
+    tipoFormacion: education.trainingType,
+    tiempoFormacion: education.trainingDuration,
+    anoRealizacion: education.yearOfCompletion,
+    estructura: education.structure,
+  });
+  const setActionFields = (action) => ({
+    id: action.id,
+    tipoAccion: action.actionType,
+    mandoEncargado: action.commandingOfficer,
+    anoRealizacion: action.yearOfCompletion,
+    estructura: action.structure,
+  });
+  const setSpecialtyFields = (specialty) => ({
+    id: specialty.id,
+    tipoEspecialidad: specialty.specialtyType,
+    tiempoDesempenado: specialty.duration,
+    estructura: specialty.structure,
+  });
+  const setSanctionFields = (sanction) => ({
+    id: sanction.id,
+    razon: sanction.reason,
+    quienSanciono: sanction.sanctionedBy,
+    tipo: sanction.sanctionType,
+    cuando: sanction.date,
+    tiempo: sanction.sanctionDuration,
+    estructura: sanction.structure,
+  });
+  const setFamiliaresPertenecientesFields = (familiar) => ({
+    id: familiar.id, // id
+    tipo: familiar.familyType, // familyType
+    nombre: familiar.name, // name
+    edad: familiar.age, // age
+    rango: familiar.rank, // rank
+    estructura: familiar.structure, // structure
+    tiempo: familiar.duration, // duration
+    estado: familiar.currentStatus, // currentStatus
+  });
+
+  const setPropertyFields = (property) => ({
+    id: property.id,
+    ubicacion: property.location,
+  });
+
   const setGeneralQuestionsFields = async (generalQuestions) => {
     setAspiraciones(generalQuestions.aspirationIn5Years);
     setSentimientos(generalQuestions.howHasFeeling);
@@ -440,6 +557,39 @@ const DatosInternosScreen = ({ route, navigation }) => {
     setOperaciones(generalQuestions.hadAnySurgeries);
     setObservaciones(generalQuestions.observations);
   };
+
+  const loadEducationData = async (respondentId) => {
+    if (!respondentId) return;
+
+    const educations = await educationRepository.findByRespondentId(
+      respondentId
+    );
+    if (!educations.length) {
+      return;
+    }
+    setFormaciones(educations.map(setEducationFields));
+  };
+  const loadSanctionData = async (respondentId) => {
+    if (!respondentId) return;
+
+    const sanctions = await sanctionsRepository.findByRespondentId(
+      respondentId
+    );
+    if (!sanctions.length) {
+      return;
+    }
+    setSanciones(sanctions.map(setSanctionFields));
+  };
+
+  const loadActionData = async (respondentId) => {
+    if (!respondentId) return;
+
+    const actions = await actionRepository.findByRespondentId(respondentId);
+    if (!actions.length) {
+      return;
+    }
+    setAcciones(actions.map(setActionFields));
+  };
   const loadGeneralQuestionsData = async (respondentId) => {
     if (!respondentId) return;
 
@@ -449,9 +599,49 @@ const DatosInternosScreen = ({ route, navigation }) => {
       setGeneralQuestionsFields(generalQuestions);
     }
   };
+  const loadSpecialtyData = async (respondentId) => {
+    if (!respondentId) return;
+
+    const specialties = await specialtiesRepository.findByRespondentId(
+      respondentId
+    );
+    if (!specialties.length) {
+      return;
+    }
+    setEspecialidades(specialties.map(setSpecialtyFields));
+  };
+  const loadFamiliaresPertenecientesData = async (respondentId) => {
+    if (!respondentId) return;
+
+    const familiaresPertenecientes =
+      await nonMilitaryFamilyMembersRepository.findByRespondentId(respondentId);
+    if (!familiaresPertenecientes.length) {
+      return;
+    }
+    setFamiliaresPertenecientes(
+      familiaresPertenecientes.map(setFamiliaresPertenecientesFields)
+    );
+  };
+  const loadPropertyData = async (respondentId) => {
+    if (!respondentId) return;
+
+    const properties = await propertiesRepository.findByRespondentId(
+      respondentId
+    );
+    if (!properties.length) {
+      return;
+    }
+    setPropiedades(properties.map(setPropertyFields));
+  };
 
   React.useEffect(() => {
     loadGeneralQuestionsData(respondentId);
+    loadEducationData(respondentId);
+    loadActionData(respondentId);
+    loadSpecialtyData(respondentId);
+    loadSanctionData(respondentId);
+    loadFamiliaresPertenecientesData(respondentId);
+    loadPropertyData(respondentId);
   }, [respondentId]);
 
   return (
@@ -469,8 +659,8 @@ const DatosInternosScreen = ({ route, navigation }) => {
           <TextInput
             style={styles.input}
             value={formacion.tipoFormacion}
-            onChangeText={(valor) =>
-              actualizarFormacion(index, "tipoFormacion", valor)
+            onChangeText={(value) =>
+              actualizarFormacion(index, "tipoFormacion", value)
             }
             placeholder="Tipo de Formación"
           />
@@ -479,8 +669,8 @@ const DatosInternosScreen = ({ route, navigation }) => {
           <TextInput
             style={styles.input}
             value={formacion.tiempoFormacion}
-            onChangeText={(valor) =>
-              actualizarFormacion(index, "tiempoFormacion", valor)
+            onChangeText={(value) =>
+              actualizarFormacion(index, "tiempoFormacion", value)
             }
             placeholder="Tiempo de Formación"
           />
@@ -489,8 +679,8 @@ const DatosInternosScreen = ({ route, navigation }) => {
           <TextInput
             style={styles.input}
             value={formacion.anoRealizacion}
-            onChangeText={(valor) =>
-              actualizarFormacion(index, "anoRealizacion", valor)
+            onChangeText={(value) =>
+              actualizarFormacion(index, "anoRealizacion", value)
             }
             placeholder="Año de Realización"
           />
@@ -499,8 +689,8 @@ const DatosInternosScreen = ({ route, navigation }) => {
           <TextInput
             style={styles.input}
             value={formacion.estructura}
-            onChangeText={(valor) =>
-              actualizarFormacion(index, "estructura", valor)
+            onChangeText={(value) =>
+              actualizarFormacion(index, "estructura", value)
             }
             placeholder="Estructura"
           />
@@ -699,7 +889,9 @@ const DatosInternosScreen = ({ route, navigation }) => {
           <TextInput
             style={styles.input}
             value={familiar.tipo}
-            onChangeText={(valor) => actualizarFamiliar(index, "tipo", valor)}
+            onChangeText={(valor) =>
+              actualizarFamiliarPerteneciente(index, "tipo", valor)
+            }
             placeholder="Tipo de Familiar"
           />
 
@@ -707,7 +899,9 @@ const DatosInternosScreen = ({ route, navigation }) => {
           <TextInput
             style={styles.input}
             value={familiar.nombre}
-            onChangeText={(valor) => actualizarFamiliar(index, "nombre", valor)}
+            onChangeText={(valor) =>
+              actualizarFamiliarPerteneciente(index, "nombre", valor)
+            }
             placeholder="Nombre"
           />
 
@@ -715,7 +909,9 @@ const DatosInternosScreen = ({ route, navigation }) => {
           <TextInput
             style={styles.input}
             value={familiar.edad}
-            onChangeText={(valor) => actualizarFamiliar(index, "edad", valor)}
+            onChangeText={(valor) =>
+              actualizarFamiliarPerteneciente(index, "edad", valor)
+            }
             placeholder="Edad"
           />
 
@@ -723,7 +919,9 @@ const DatosInternosScreen = ({ route, navigation }) => {
           <TextInput
             style={styles.input}
             value={familiar.rango}
-            onChangeText={(valor) => actualizarFamiliar(index, "rango", valor)}
+            onChangeText={(valor) =>
+              actualizarFamiliarPerteneciente(index, "rango", valor)
+            }
             placeholder="Rango"
           />
 
@@ -732,7 +930,7 @@ const DatosInternosScreen = ({ route, navigation }) => {
             style={styles.input}
             value={familiar.estructura}
             onChangeText={(valor) =>
-              actualizarFamiliar(index, "estructura", valor)
+              actualizarFamiliarPerteneciente(index, "estructura", valor)
             }
             placeholder="Estructura"
           />
@@ -741,7 +939,9 @@ const DatosInternosScreen = ({ route, navigation }) => {
           <TextInput
             style={styles.input}
             value={familiar.tiempo}
-            onChangeText={(valor) => actualizarFamiliar(index, "tiempo", valor)}
+            onChangeText={(valor) =>
+              actualizarFamiliarPerteneciente(index, "tiempo", valor)
+            }
             placeholder="¿Qué tiempo lleva?"
           />
 
@@ -749,13 +949,15 @@ const DatosInternosScreen = ({ route, navigation }) => {
           <TextInput
             style={styles.input}
             value={familiar.estado}
-            onChangeText={(valor) => actualizarFamiliar(index, "estado", valor)}
+            onChangeText={(valor) =>
+              actualizarFamiliarPerteneciente(index, "estado", valor)
+            }
             placeholder="Estado Actual"
           />
 
           <TouchableOpacity
             style={styles.deleteButton}
-            onPress={() => eliminarFamiliar(index)}
+            onPress={() => eliminarFamiliarPerteneciente(index)}
           >
             <Text style={styles.deleteButtonText}>Eliminar Familiar</Text>
           </TouchableOpacity>

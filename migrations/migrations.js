@@ -1,7 +1,7 @@
 export async function migrateDbIfNeeded(db) {
   const DATABASE_VERSION = 1;
   let { user_version: currentDbVersion } = await db.getFirstAsync(
-    'PRAGMA user_version'
+    "PRAGMA user_version"
   );
   if (currentDbVersion >= DATABASE_VERSION) {
     return;
@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS father (
   current_address TEXT,
   phone TEXT,
   spouse TEXT,  
-  FOREIGN KEY (respondent_id) REFERENCES respondents(id)
+  FOREIGN KEY (respondent_id) REFERENCES respondents(id) ON DELETE CASCADE
 );
   `);
     await db.execAsync(`
@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS mother (
   current_address TEXT,
   phone TEXT,
   spouse TEXT,  
-  FOREIGN KEY (respondent_id) REFERENCES respondents(id)
+  FOREIGN KEY (respondent_id) REFERENCES respondents(id) ON DELETE CASCADE
 );
   `);
     await db.execAsync(`
@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS children (
   current_address TEXT,
   phone TEXT,
   spouse TEXT,  
-  FOREIGN KEY (respondent_id) REFERENCES respondents(id)
+  FOREIGN KEY (respondent_id) REFERENCES respondents(id) ON DELETE CASCADE
 );
   `);
     await db.execAsync(`
@@ -68,7 +68,7 @@ CREATE TABLE IF NOT EXISTS siblings (
   current_address TEXT,
   phone TEXT,
   spouse TEXT,  
-  FOREIGN KEY (respondent_id) REFERENCES respondents(id)
+  FOREIGN KEY (respondent_id) REFERENCES respondents(id) ON DELETE CASCADE
 );
   `);
     await db.execAsync(`
@@ -85,7 +85,7 @@ CREATE TABLE IF NOT EXISTS spouse (
   phone TEXT,
   spouse TEXT,
   relationship_status TEXT,  
-  FOREIGN KEY (respondent_id) REFERENCES respondents(id)
+  FOREIGN KEY (respondent_id) REFERENCES respondents(id) ON DELETE CASCADE
 );
   `);
     await db.execAsync(`
@@ -97,7 +97,7 @@ CREATE TABLE IF NOT EXISTS education (
   training_duration TEXT,
   year_of_completion TEXT,
   structure TEXT,
-  FOREIGN KEY (respondent_id) REFERENCES respondents(id)
+  FOREIGN KEY (respondent_id) REFERENCES respondents(id) ON DELETE CASCADE
 );
   `);
     await db.execAsync(`
@@ -109,7 +109,7 @@ CREATE TABLE IF NOT EXISTS action (
   commanding_officer TEXT,
   year_of_completion TEXT,
   structure TEXT,
-  FOREIGN KEY (respondent_id) REFERENCES respondents(id)
+  FOREIGN KEY (respondent_id) REFERENCES respondents(id) ON DELETE CASCADE
 );
   `);
     await db.execAsync(`
@@ -120,7 +120,7 @@ CREATE TABLE IF NOT EXISTS specialties (
   specialty_type TEXT,
   duration TEXT,
   structure TEXT,
-  FOREIGN KEY (respondent_id) REFERENCES respondents(id)
+  FOREIGN KEY (respondent_id) REFERENCES respondents(id) ON DELETE CASCADE
 );
   `);
     await db.execAsync(`
@@ -134,7 +134,7 @@ CREATE TABLE IF NOT EXISTS sanctions (
   date TEXT,
   sanction_duration TEXT,
   structure TEXT,
-  FOREIGN KEY (respondent_id) REFERENCES respondents(id)
+  FOREIGN KEY (respondent_id) REFERENCES respondents(id) ON DELETE CASCADE
 );
   `);
     await db.execAsync(`
@@ -149,7 +149,7 @@ CREATE TABLE IF NOT EXISTS NonMilitary_family_members (
   structure TEXT,
   duration TEXT,
   current_status TEXT,
-  FOREIGN KEY (respondent_id) REFERENCES respondents(id)
+  FOREIGN KEY (respondent_id) REFERENCES respondents(id) ON DELETE CASCADE
 );
   `);
     await db.execAsync(`
@@ -158,7 +158,7 @@ CREATE TABLE IF NOT EXISTS properties (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   respondent_id INTEGER,
   location TEXT,
-  FOREIGN KEY (respondent_id) REFERENCES respondents(id)
+  FOREIGN KEY (respondent_id) REFERENCES respondents(id) ON DELETE CASCADE
 );
   `);
     await db.execAsync(`
@@ -180,7 +180,7 @@ CREATE TABLE IF NOT EXISTS security_questions (
   other_organization_duration TEXT,
   reason_for_leaving_organization TEXT,
   has_military_friends TEXT,
-  FOREIGN KEY (respondent_id) REFERENCES respondents(id)
+  FOREIGN KEY (respondent_id) REFERENCES respondents(id) ON DELETE CASCADE
 );
   `);
 
@@ -207,7 +207,7 @@ CREATE TABLE IF NOT EXISTS general_questions (
   had_any_surgeries TEXT,
   observations TEXT,
   has_military_friends TEXT,
-  FOREIGN KEY (respondent_id) REFERENCES respondents(id)
+  FOREIGN KEY (respondent_id) REFERENCES respondents(id) ON DELETE CASCADE
 );
   `);
     await db.execAsync(`
@@ -224,7 +224,7 @@ CREATE TABLE IF NOT EXISTS military_family_members (
   family_rank TEXT,
   family_unit TEXT,
   family_service_location TEXT,
-  FOREIGN KEY (respondent_id) REFERENCES respondents(id)
+  FOREIGN KEY (respondent_id) REFERENCES respondents(id) ON DELETE CASCADE
 );
   `);
     await db.execAsync(`
@@ -252,7 +252,7 @@ CREATE TABLE IF NOT EXISTS other_questions (
   biggest_fear TEXT,
   greatest_joy TEXT,
   response_to_offense_or_attack TEXT,
-  FOREIGN KEY (respondent_id) REFERENCES respondents(id)
+  FOREIGN KEY (respondent_id) REFERENCES respondents(id) ON DELETE CASCADE
 );
   `);
 

@@ -17,13 +17,8 @@ import { ChildrenRepository } from "../repositories/ChildrenRepository";
 
 const DatosFamiliaresScreen = ({ route, navigation }) => {
   const respondentId = route.params?.respondentId;
-  // console.log("respondentId", respondentId);
+
   const db = useSQLiteContext();
-  // React.useEffect(() => {
-  //   db.withTransactionAsync(async () => {
-  //     await getData();
-  //   });
-  // }, [db]);
 
   //estado para la madre
   const [nombreMadre, setNombreMadre] = useState("");
@@ -258,7 +253,7 @@ const DatosFamiliaresScreen = ({ route, navigation }) => {
         return;
       }
       console.log("madre actualizado correctamente.");
-      navigation.navigate("DatosInternos", { respondentId });
+      // navigation.navigate("DatosInternos", { respondentId });
     } else {
       await motherRepository.create(getMotherFields());
     }
@@ -274,7 +269,7 @@ const DatosFamiliaresScreen = ({ route, navigation }) => {
         return;
       }
       console.log("padre actualizado correctamente.");
-      navigation.navigate("DatosInternos", { respondentId });
+      // navigation.navigate("DatosInternos", { respondentId });
     } else {
       await fatherRepository.create(getFatherFields());
     }
@@ -290,7 +285,7 @@ const DatosFamiliaresScreen = ({ route, navigation }) => {
         return;
       }
       console.log("spouse actualizado correctamente.");
-      navigation.navigate("DatosInternos", { respondentId });
+      // navigation.navigate("DatosInternos", { respondentId });
     } else {
       await spouseRepository.create(getSpouseFields());
     }
@@ -830,9 +825,7 @@ const DatosFamiliaresScreen = ({ route, navigation }) => {
           <TextInput
             style={datosFamiliaresStyles.input}
             value={hijo.conyugue}
-            onChangeText={(value) =>
-              handleHermanoChange(index, "conyugue", value)
-            }
+            onChangeText={(value) => actualizarHijo(index, "conyugue", value)}
             placeholder="Cónyuge o Pareja Actual"
           />
 
