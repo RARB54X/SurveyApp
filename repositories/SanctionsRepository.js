@@ -46,16 +46,10 @@ export class SanctionsRepository {
     try {
       const response = await this.db.runAsync(
         `UPDATE sanctions SET 
-            respondent_id = ?, 
-            reason = ?, 
-            sanctioned_by = ?, 
-            sanction_type = ?, 
-            date = ?, 
-            sanction_duration = ?, 
-            structure = ? 
-        WHERE id = ?;`,
+                reason = ?, sanctioned_by = ?, sanction_type = ?, date = ?, 
+                sanction_duration = ?, structure = ?
+            WHERE id = ?;`,
         [
-          sanction.respondentId,
           sanction.reason,
           sanction.sanctionedBy,
           sanction.sanctionType,
@@ -70,9 +64,10 @@ export class SanctionsRepository {
 
       return response.changes > 0;
     } catch (error) {
-      console.error("Error al actualizar la sanción:", error.message);
+      console.error("Error al actualizar sanción:", error.message);
     }
   }
+
   async findByRespondentId(respondentId) {
     try {
       const result = await this.db.getAllAsync(

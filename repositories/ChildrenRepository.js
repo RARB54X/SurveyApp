@@ -118,7 +118,7 @@ export class ChildrenRepository {
 
   async delete(id) {
     try {
-      await this.db.runAsync(`DELETE FROM childen WHERE id = ?;`, [id]);
+      await this.db.runAsync(`DELETE FROM children WHERE id = ?;`, [id]);
     } catch (error) {
       console.error("Error al eliminar hijo por ID:", error.message);
     }
