@@ -12,8 +12,6 @@ export class ActionRepository {
       const lastInsertRowId = await new Promise((resolve, reject) => {
         this.db.withTransactionAsync(async () => {
           try {
-            console.log("Insertando Acción...", action);
-
             // Consulta SQL para insertar en action
             const response = await this.db.runAsync(
               `INSERT INTO action (
@@ -34,7 +32,7 @@ export class ActionRepository {
           }
         });
       });
-      console.log("action id insertado:", lastInsertRowId);
+
       return lastInsertRowId;
     } catch (error) {
       console.error("Error al insertar action:", error.message);

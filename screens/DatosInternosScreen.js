@@ -68,7 +68,7 @@ const DatosInternosScreen = ({ route, navigation }) => {
   const eliminarFormacion = async (index) => {
     const formacion = formaciones[index];
     const education = await educationRepository.findById(formacion.id);
-    if (formacion) {
+    if (education) {
       await educationRepository.delete(education.id);
     }
     setFormaciones(formaciones.filter((_, i) => i !== index));

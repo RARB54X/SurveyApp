@@ -8,9 +8,7 @@
         "buildType": "apk"
       },
       "ios": {
-        "bundleIdentifier": "com.mycompany.myapp",
-        "buildNumber": "1.0.0",
-        "supportsTablet": true
+        "simulator": true
       }
     },
     "preview2": {

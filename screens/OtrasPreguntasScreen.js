@@ -91,29 +91,6 @@ const OtrasPreguntasScreen = ({ route, navigation }) => {
       await otherQuestionsRepository.create(getOtherQuestionsFields());
     }
 
-    // await otherQuestionsRepository.create({
-    //   respondentId,
-    //   livedWithFirst7Years: primerosAños,
-    //   punishmentMethod: comoCastigaban,
-    //   rewardMethod: comoPremiaban,
-    //   childhoodAspiration: queriaSerGrande,
-    //   currentAspiration: quiereSerAhora,
-    //   relationshipWithFather: relacionPadre,
-    //   relationshipWithMother: relacionMadre,
-    //   relationshipWithSiblings: relacionHermanos,
-    //   hasStablePartner: parejaEstable,
-    //   timeWithPartner: tiempoPareja,
-    //   relationshipWithPartner: relacionPareja,
-    //   ageOfFirstSexualRelationship: primeraRelacionSexual,
-    //   currentSituation: esComoImaginaba,
-    //   affectionDemonstration: demuestraAfecto,
-    //   inLove: enamorado,
-    //   fears: teme,
-    //   biggestFear: sustoMasGrande,
-    //   greatestJoy: alegriaMasGrande,
-    //   responseToOffenseOrAttack: respuestaOfensa,
-    // });
-
     navigation.navigate("Inicio");
   };
 

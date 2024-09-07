@@ -146,25 +146,6 @@ const PreguntasSeguridadScreen = ({ route, navigation }) => {
   const handleSubmit = async () => {
     await saveMilitaryFamilyMembers(familiaresFuerzas, respondentId);
 
-    // await securityQuestionsRepository.create({
-    //   respondentId,
-    //   reasonForCapture: razonCaptura,
-    //   capturedBy: quienCaptura,
-    //   captureDate: cuandoCaptura,
-    //   captureLocation: dondeCaptura,
-    //   prisonName: carcel,
-    //   prisonDuration: tiempoCaptura,
-    //   releaseMethod: comoSalio,
-
-    //   militaryServiceStart: cuandoServicio,
-    //   militaryServiceLocation: dondeServicio,
-    //   militaryServiceEnd: comoSalioServicio,
-
-    //   otherOrganization: cuálOrganización,
-    //   otherOrganizationDuration: cuantoTiempoOrganización,
-    //   reasonForLeavingOrganization: motivoRetiroOrganización,
-    //   hasMilitaryFriends: amigosFuerzasMilitares,
-    // });
     const securityQuestion =
       await securityQuestionsRepository.findByRespondentId(respondentId);
     if (securityQuestion) {
